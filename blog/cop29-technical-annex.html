@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>COP29 Technical Annex: What the Grid Storage Provisions Actually Say — Jaloliddin Ismailov</title>
+  <link rel="stylesheet" href="../css/style.css" />
+</head>
+<body data-page="blog" data-root="..">
+<script src="../js/nav.js"></script>
+
+<div class="page-content page-content--narrow">
+
+  <a class="back-link" href="../blog.html">all posts</a>
+
+  <div class="post-header">
+    <h1>COP29 Technical Annex: What the Grid Storage Provisions Actually Say</h1>
+    <div class="post-meta">December 2, 2024 · <span class="post-tags"><span class="blog-card__tag">climate</span><span class="blog-card__tag">policy</span></span></div>
+  </div>
+
+  <div class="post-body">
+
+    <p>Baku produced a lot of noise and one document that most negotiators never read end-to-end:
+    the <em>Technical Annex on Flexible Grid Resources and Long-Duration Storage</em>, appended
+    to the Global Stocktake outcome. Here is a close read of the provisions that matter for
+    engineers and project developers, stripped of the usual COP abstraction.</p>
+
+    <h2>Why this annex exists</h2>
+
+    <p>The 1.5 °C pathway modelled by the IPCC requires roughly 1 500 GW of new storage by 2035.
+    The problem is definitional: prior COPs treated "storage" as a single bucket, letting
+    countries count pumped hydro commissioned in 1973 toward 2030 targets. The annex fixes
+    this by introducing three tiers:</p>
+
+    <ul>
+      <li><strong>Tier 1 — short-duration (≤ 4 h):</strong> lithium-ion, lead-acid, supercapacitors.
+          Grid-frequency services and renewable firming.</li>
+      <li><strong>Tier 2 — medium-duration (4–24 h):</strong> flow batteries, compressed air,
+          sodium-ion. Diurnal balancing.</li>
+      <li><strong>Tier 3 — long-duration (≥ 24 h):</strong> green hydrogen, iron-air batteries,
+          gravity storage. Seasonal firming. This is the tier that actually unlocks
+          high-VRE grids above 80% penetration.</li>
+    </ul>
+
+    <div class="callout">
+      <span class="icon">📋</span>
+      <strong>Key provision (§4.2.1):</strong> NDC updates due in 2025 must separately
+      report Tier 2 and Tier 3 capacity in GWh, not aggregate with Tier 1.
+      Countries that do not disaggregate will be flagged in the 2026 Global Stocktake.
+    </div>
+
+    <h2>The measurement problem the annex does not solve</h2>
+
+    <p>The annex mandates disaggregated reporting but stays silent on <em>how</em> to measure
+    Tier 3 capacity. For green hydrogen this is particularly awkward: the energy stored is in
+    the hydrogen, but the useful electricity recovered depends on round-trip efficiency —
+    which varies 40–65% depending on whether you use a fuel cell or a gas turbine on the
+    discharge side. §4.3.7 defers this to a "methodology note" to be published by
+    IRENA in Q2 2025. That note does not yet exist as of this writing.</p>
+
+    <p>The practical consequence: any Tier 3 project commissioned before that methodology
+    lands is reporting to an undefined standard. If you are advising a developer, build
+    in a conservative 50% round-trip assumption for now — it is defensible to any
+    subsequent auditor.</p>
+
+    <h2>What changed for project finance</h2>
+
+    <p>The annex introduces a voluntary "Article 6.4 Storage Credit" mechanism. Long-duration
+    projects that meet the Tier 3 threshold and demonstrate additionality (i.e., they enable
+    renewable capacity that would otherwise be curtailed) can issue credits tradeable
+    under the Paris Agreement carbon market. The credit value is denominated in
+    <em>tonne-CO₂-equivalent displaced</em>, calculated against a country-specific baseline grid
+    emission factor.</p>
+
+    <p>This sounds clean but has a gotcha: the baseline must be the <em>marginal</em> emission factor,
+    not the average. For most developing grids with significant coal peaking, the marginal
+    factor is 2–3× the average. Projects that use the average factor will have their credits
+    reviewed downward at issuance.</p>
+
+    <h2>The firmware angle</h2>
+
+    <p>One paragraph buried in §5.1 caught my eye as someone who writes embedded control
+    software. It requires that grid-connected storage assets above 1 MWh submit
+    "interoperability attestations" proving the battery management system can respond to
+    ISO/IEC 61850-7-420 commands for remote dispatch. For most utility-scale systems
+    this is already handled at the inverter level. But for aggregated distributed
+    storage — think behind-the-meter residential batteries pooled into a virtual
+    power plant — the firmware stack needs to implement the full XMPP-based messaging
+    layer, not just a vendor API wrapper.</p>
+
+    <div class="callout">
+      <span class="icon">⚙️</span>
+      <strong>Technical note:</strong> IEC 61850-7-420 defines the logical node
+      <code>ZBAT</code> for battery energy storage. If your VPP firmware speaks
+      only REST or MQTT, you will need a protocol translation layer before the
+      2027 compliance deadline in the annex.
+    </div>
+
+    <h2>Bottom line</h2>
+
+    <p>The COP29 Technical Annex is more technically specific than anything that has come
+    out of a COP negotiating room before. The tier taxonomy is sensible. The Article 6.4
+    Storage Credit mechanism is promising but half-finished — the IRENA methodology gap
+    is real and will create a messy 12–18 months of inconsistent project reporting.
+    The IEC 61850 mandate is quietly important for anyone building distributed storage
+    control systems.</p>
+
+    <p>Full annex text: <a href="https://unfccc.int" target="_blank" rel="noopener" style="color:var(--red);">UNFCCC document portal</a>
+    (search "COP29 Technical Annex Flexible Grid Resources").</p>
+
+  </div>
+
+</div>
+
+<footer class="site-footer">
+  made with care · <a href="https://github.com/YOUR_GITHUB" target="_blank" rel="noopener">source</a>
+</footer>
+
+<script src="../js/main.js"></script>
+</body>
+</html>

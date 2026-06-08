@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>TinyML Wildfire Sensor — Jaloliddin Ismailov</title>
+  <link rel="stylesheet" href="../css/style.css" />
+</head>
+<body data-page="work" data-root="..">
+<script src="../js/nav.js"></script>
+
+<div class="page-content project-page-wrap">
+
+  <a class="back-link" href="../index.html">all projects</a>
+
+  <div class="project-page-header">
+    <div class="tags" style="margin-bottom:8px;">
+      <span class="tag">edge-ai</span>
+      <span class="tag">climate</span>
+      <span class="tag">embedded</span>
+    </div>
+    <h1>TinyML Wildfire Sensor</h1>
+    <div class="meta">Nov 2024 · STM32L4 · MCUNet · deployed: Ventura County, CA</div>
+  </div>
+
+  <div class="project-cover-placeholder">[ cover image ]</div>
+
+  <div class="cell cell-prose">
+    <p>Wildfire detection is a last-mile problem: satellite revisit is too slow, aerial cameras
+    too expensive, and LoRa gateways sparse in the chaparral. This project puts a full
+    smoke-and-heat classifier on an <strong>STM32L476</strong> Cortex-M4 running at 4 MHz
+    from a 2 × AA cell, targeting <strong>40 μW</strong> in duty-cycled inference mode.</p>
+    <p>The model is a quantised MobileNet-V1 variant trained with the MCUNet toolkit on
+    14 000 IR-thermal + smoke-sensor frame pairs from the 2023 Ventura fire season.
+    Inference takes 120 ms; with a 4-second wake cycle the radio is off 97% of the time.</p>
+  </div>
+
+  <div class="callout">
+    <span class="icon">🌿</span>
+    <strong>Climate context:</strong> Designed for deployment under California's AB 38
+    defensible-space monitoring framework. All data anonymised before upload.
+  </div>
+
+  <div class="section-divider">architecture</div>
+
+  <div class="cols cols-2">
+    <div class="cell cell-prose">
+      <strong>Hardware</strong>
+      <p>STM32L476RG · MLX90640 thermal array (32×24) · SDS011 particulate sensor ·
+         SX1276 LoRa radio · 3.3 V LDO + supercap buffer.
+         4-layer KiCad PCB, 50×70 mm, BOM &lt; $18 @ qty 100.</p>
+    </div>
+    <div class="cell cell-prose">
+      <strong>Software</strong>
+      <p>Bare-metal C on FreeRTOS · CMSIS-NN inference kernels · MCUNet INT8 weights ·
+         custom LoRaWAN MAC. CMake + arm-none-eabi-gcc 13.2.
+         Flash: 96 KB text, 38 KB weights, 12 KB stack/heap.</p>
+    </div>
+  </div>
+
+  <div class="section-divider">model training</div>
+
+  <div class="cell">
+    <div class="code-block-wrap">
+      <div class="code-block-header">
+        <span class="lang">python</span>
+        <span>train.py — MCUNet fine-tune</span>
+        <button class="toggle-btn">[collapse]</button>
+      </div>
+      <div class="code-block-body">
+        <div class="line-numbers">1<br>2<br>3<br>4<br>5<br>6<br>7<br>8<br>9<br>10<br>11<br>12<br>13<br>14<br>15</div>
+        <pre class="code"><code><span class="pp">import</span> torch
+<span class="pp">from</span> mcunet.model_zoo <span class="pp">import</span> build_model
+
+<span class="cm"># Target: STM32L4, SRAM 50 KB, flash 128 KB</span>
+model, image_size, description = build_model(
+    net_id=<span class="st">"mcunet-5fps"</span>,
+    dataset=<span class="st">"imagenet"</span>,
+)
+
+<span class="cm"># Replace head for binary classification (fire / no-fire)</span>
+model.classifier = torch.nn.Linear(model.classifier.in_features, <span class="nu">2</span>)
+
+<span class="kw">def</span> <span class="fn">train_epoch</span>(loader, optimizer, criterion):
+    model.train()
+    <span class="kw">for</span> imgs, labels <span class="kw">in</span> loader:
+        optimizer.zero_grad()
+        loss = criterion(model(imgs), labels)
+        loss.backward(); optimizer.step()</code></pre>
+      </div>
+    </div>
+  </div>
+
+  <div class="section-divider">on-device inference — hover ◆ for notes</div>
+
+  <div class="cell">
+    <div class="code-block-wrap">
+      <div class="code-block-header">
+        <span class="lang">c</span>
+        <span>power.c — duty-cycle loop</span>
+        <button class="toggle-btn">[collapse]</button>
+      </div>
+      <div class="code-block-body">
+        <div class="line-numbers">1<br>2<br>3<br>4<br>5<br>6<br>7<br>8<br>9<br>10</div>
+        <pre class="code"><code><span class="kw">void</span> <span class="fn">inference_loop</span>(<span class="kw">void</span>) {
+<span class="code-line annotated">    HAL_PWR_EnterSTOPMode(PWR_LOWPOWERREGULATOR_ON, PWR_STOPENTRY_WFI);
+    <span class="annotation-marker">◆</span><span class="annotation-bubble">STOP2 drops core to ~4 μA. RTC fires every 4 s. No peripheral clocks survive — re-init SPI on wake.</span></span>
+    SystemClock_Config_4MHz();
+
+<span class="code-line annotated">    thermal_dma_read(frame_buf, MLX_FRAME_SIZE);
+    <span class="annotation-marker">◆</span><span class="annotation-bubble">DMA keeps the M4 asleep while MLX90640 clocks out 768 bytes. Saves ~0.8 ms active time per frame.</span></span>
+
+    <span class="kw">if</span> (<span class="fn">run_inference</span>(quantise_frame(frame_buf)))
+        lora_tx_alert();
+}</code></pre>
+      </div>
+    </div>
+  </div>
+
+  <div class="section-divider">results</div>
+
+  <div class="cell cell-prose">
+    <p>Four nodes live since Nov 2024, 1 200–1 800 m elevation, Ventura County:</p>
+    <ul>
+      <li>Mean battery life: <strong>83 days</strong> on 2 × AA</li>
+      <li>False positive rate: <strong>0.4%</strong> (dew + fog)</li>
+      <li>Detection latency vs. camera: <strong>−2.1 min</strong> median</li>
+      <li>LoRaWAN packet delivery (SF10): <strong>94%</strong></li>
+    </ul>
+    <p style="margin-top:12px;">Hardware design files on <a href="#" style="color:var(--red);">GitHub</a>.
+    Model weights release after second field season.</p>
+  </div>
+
+  <div class="callout warn">
+    <span class="icon">⚠</span>
+    <strong>Known issue:</strong> MLX90640 has ~2 K calibration drift below 5 °C.
+    Apply correction in <code>quantise_frame()</code> for cold deployments.
+  </div>
+
+</div>
+
+<footer class="site-footer">
+  made with care · <a href="https://github.com/YOUR_GITHUB" target="_blank" rel="noopener">source</a>
+</footer>
+
+<script src="../js/main.js"></script>
+</body>
+</html>
