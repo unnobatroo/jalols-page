@@ -1,59 +1,63 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>A Minimal RISC-V Softcore on iCE40 for On-Device Inference — Jaloliddin Ismailov</title>
   <link rel="stylesheet" href="../css/style.css" />
 </head>
+
 <body data-page="blog" data-root="..">
-<script src="../js/nav.js"></script>
+  <script src="../js/nav.js"></script>
 
-<div class="page-content page-content--narrow">
+  <div class="page-content page-content--narrow">
 
-  <a class="back-link" href="../blog.html">all posts</a>
+    <a class="back-link" href="../blog.html">all posts</a>
 
-  <div class="post-header">
-    <h1>A Minimal RISC-V Softcore on iCE40 for On-Device Inference</h1>
-    <div class="post-meta">July 28, 2024 · <span class="post-tags"><span class="blog-card__tag">embedded</span><span class="blog-card__tag">fpga</span><span class="blog-card__tag">risc-v</span></span></div>
-  </div>
+    <div class="post-header">
+      <h1>A Minimal RISC-V Softcore on iCE40 for On-Device Inference</h1>
+      <div class="post-meta">July 28, 2024 · <span class="post-tags"><span class="blog-card__tag">embedded</span><span
+            class="blog-card__tag">fpga</span><span class="blog-card__tag">risc-v</span></span></div>
+    </div>
 
-  <div class="post-body">
+    <div class="post-body">
 
-    <p>The Lattice iCE40UP5K is a $4 FPGA with 5280 LUTs, 1 Mb SPRAM, and a hard SPI block.
-    It is not supposed to run a CPU <em>and</em> do useful inference. I did it anyway, mostly
-    to understand where the real bottlenecks are in ultra-low-power neural network execution —
-    and partly because fitting a 32-bit RISC-V core plus an INT8 matrix engine into 4 200 LUTs
-    felt like a good puzzle.</p>
+      <p>The Lattice iCE40UP5K is a $4 FPGA with 5280 LUTs, 1 Mb SPRAM, and a hard SPI block.
+        It is not supposed to run a CPU <em>and</em> do useful inference. I did it anyway, mostly
+        to understand where the real bottlenecks are in ultra-low-power neural network execution —
+        and partly because fitting a 32-bit RISC-V core plus an INT8 matrix engine into 4 200 LUTs
+        felt like a good puzzle.</p>
 
-    <h2>Why a softcore instead of an ARM MCU?</h2>
+      <h2>Why a softcore instead of an ARM MCU?</h2>
 
-    <p>The short answer is reconfigurability. A fixed MCU gives you a fixed pipeline; an FPGA
-    lets you co-design the CPU and the accelerator so the datapath is exactly as wide as your
-    model weights require — no more, no less. For an 8-bit 32×32 matrix multiply the optimal
-    SIMD width is 32 bytes, which maps cleanly onto a 256-bit bus inside the fabric but would
-    require awkward tiling on any standard MCU with a 32-bit or 64-bit SIMD unit.</p>
+      <p>The short answer is reconfigurability. A fixed MCU gives you a fixed pipeline; an FPGA
+        lets you co-design the CPU and the accelerator so the datapath is exactly as wide as your
+        model weights require — no more, no less. For an 8-bit 32×32 matrix multiply the optimal
+        SIMD width is 32 bytes, which maps cleanly onto a 256-bit bus inside the fabric but would
+        require awkward tiling on any standard MCU with a 32-bit or 64-bit SIMD unit.</p>
 
-    <p>The longer answer is that I wanted to understand what "minimal" actually means. A
-    Cortex-M0 is minimal for a product; a hand-rolled RV32IMC in Verilog is minimal for
-    learning. The former abstracts everything; the latter forces you to own every cycle.</p>
+      <p>The longer answer is that I wanted to understand what "minimal" actually means. A
+        Cortex-M0 is minimal for a product; a hand-rolled RV32IMC in Verilog is minimal for
+        learning. The former abstracts everything; the latter forces you to own every cycle.</p>
 
-    <h2>The core: rv32e-lite</h2>
+      <h2>The core: rv32e-lite</h2>
 
-    <p>I started from <a href="https://github.com/YosysHQ/picorv32" target="_blank" rel="noopener" style="color:var(--red);">PicoRV32</a>
-    and stripped it down to RV32E (16 registers instead of 32) with no multiply/divide
-    hardware. That freed about 600 LUTs. The resulting core synthesises to 1 050 LUTs on
-    iCE40 at 24 MHz via nextpnr. Call it <em>rv32e-lite</em>.</p>
+      <p>I started from <a href="https://github.com/YosysHQ/picorv32" target="_blank" rel="noopener"
+          style="color:var(--red);">PicoRV32</a>
+        and stripped it down to RV32E (16 registers instead of 32) with no multiply/divide
+        hardware. That freed about 600 LUTs. The resulting core synthesises to 1 050 LUTs on
+        iCE40 at 24 MHz via nextpnr. Call it <em>rv32e-lite</em>.</p>
 
-    <div class="code-block-wrap">
-      <div class="code-block-header">
-        <span class="lang">verilog</span>
-        <span>top.v — LUT budget breakdown (synthesis report excerpt)</span>
-        <button class="toggle-btn">[collapse]</button>
-      </div>
-      <div class="code-block-body">
-        <div class="line-numbers">1<br>2<br>3<br>4<br>5<br>6<br>7<br>8<br>9<br>10<br>11<br>12</div>
-        <pre class="code"><code><span class="cm">// nextpnr --hx8k --package cb132 --freq 24</span>
+      <div class="code-block-wrap">
+        <div class="code-block-header">
+          <span class="lang">verilog</span>
+          <span>top.v — LUT budget breakdown (synthesis report excerpt)</span>
+          <button class="toggle-btn">[collapse]</button>
+        </div>
+        <div class="code-block-body">
+          <div class="line-numbers">1<br>2<br>3<br>4<br>5<br>6<br>7<br>8<br>9<br>10<br>11<br>12</div>
+          <pre class="code"><code><span class="cm">// nextpnr --hx8k --package cb132 --freq 24</span>
 <span class="cm">// Resource utilisation after place-and-route:</span>
 <span class="cm">//</span>
 <span class="cm">//   Module          LUTs    FFs    BRAM (kB)</span>
@@ -65,31 +69,33 @@
 <span class="cm">//   ------------------------------------------</span>
 <span class="cm">//   TOTAL           3946   2148    192 / 256 kB</span>
 <span class="cm">//   Headroom          6%    59%     25%</span></code></pre>
+        </div>
       </div>
-    </div>
 
-    <h2>The accelerator: matmul_int8</h2>
+      <h2>The accelerator: matmul_int8</h2>
 
-    <p>The matrix multiply unit is a systolic array of 8 MAC cells, each operating on INT8
-    operands with INT32 accumulation. Eight cells was the sweet spot: wider arrays fit
-    but the routing congestion pushed timing below 20 MHz. At 8 cells and 24 MHz the
-    throughput is 192 MMAC/s — enough for a 4-layer MLP with 128-unit hidden layers
-    to run in under 2 ms.</p>
+      <p>The matrix multiply unit is a systolic array of 8 MAC cells, each operating on INT8
+        operands with INT32 accumulation. Eight cells was the sweet spot: wider arrays fit
+        but the routing congestion pushed timing below 20 MHz. At 8 cells and 24 MHz the
+        throughput is 192 MMAC/s — enough for a 4-layer MLP with 128-unit hidden layers
+        to run in under 2 ms.</p>
 
-    <p>The CPU loads weight tiles from the on-chip SPRAM via a custom CSR instruction
-    (<code>matmul.load</code>, opcode space 0x0B), fires the accelerator with
-    <code>matmul.exec</code>, then polls a status CSR. Total software overhead per
-    layer: ~30 instructions.</p>
+      <p>The CPU loads weight tiles from the on-chip SPRAM via a custom CSR instruction
+        (<code>matmul.load</code>, opcode space 0x0B), fires the accelerator with
+        <code>matmul.exec</code>, then polls a status CSR. Total software overhead per
+        layer: ~30 instructions.
+      </p>
 
-    <div class="code-block-wrap">
-      <div class="code-block-header">
-        <span class="lang">c</span>
-        <span>infer.c — layer dispatch (compiled with rv32e-gcc -O2)</span>
-        <button class="toggle-btn">[collapse]</button>
-      </div>
-      <div class="code-block-body">
-        <div class="line-numbers">1<br>2<br>3<br>4<br>5<br>6<br>7<br>8<br>9<br>10<br>11<br>12<br>13<br>14<br>15<br>16<br>17<br>18</div>
-        <pre class="code"><code><span class="cm">/* Fire the matmul accelerator for one fully-connected layer.
+      <div class="code-block-wrap">
+        <div class="code-block-header">
+          <span class="lang">c</span>
+          <span>infer.c — layer dispatch (compiled with rv32e-gcc -O2)</span>
+          <button class="toggle-btn">[collapse]</button>
+        </div>
+        <div class="code-block-body">
+          <div class="line-numbers">
+            1<br>2<br>3<br>4<br>5<br>6<br>7<br>8<br>9<br>10<br>11<br>12<br>13<br>14<br>15<br>16<br>17<br>18</div>
+          <pre class="code"><code><span class="cm">/* Fire the matmul accelerator for one fully-connected layer.
    weight_ptr: INT8 weight matrix in SPRAM (row-major)
    in_ptr:     INT8 activation vector
    out_ptr:    INT32 accumulator output               */</span>
@@ -108,55 +114,57 @@
     <span class="kw">int</span> status;
     <span class="kw">do</span> { asm volatile(<span class="st">"csrr %0, 0x805"</span> : <span class="st">"=r"</span>(status)); } <span class="kw">while</span> (!(status &amp; <span class="nu">1</span>));
 }</code></pre>
+        </div>
       </div>
+
+      <h2>Power and timing results</h2>
+
+      <p>Measured on a custom breakout board with a Nordic Power Profiler Kit II:</p>
+
+      <ul>
+        <li>Idle (clocks gated): <strong>85 μW</strong> at 1.2 V core</li>
+        <li>Inference active (4-layer MLP, 128 units): <strong>4.2 mW</strong></li>
+        <li>Inference latency: <strong>1.8 ms</strong></li>
+        <li>Energy per inference: <strong>7.6 μJ</strong></li>
+      </ul>
+
+      <p>For comparison, the same model on an STM32L476 Cortex-M4 @ 80 MHz with CMSIS-NN
+        takes 3.1 ms and consumes ~18 mW active — about 56 μJ per inference. The softcore
+        approach is 7× more energy-efficient despite running at 3× lower clock speed, because
+        the datapath width is matched to the workload.</p>
+
+      <div class="callout">
+        <span class="icon">⚡</span>
+        <strong>The key insight:</strong> energy efficiency in inference is dominated by
+        memory bandwidth, not compute. The iCE40 SPRAM at 256 kB is small but it sits
+        directly on the fabric crossbar — no cache hierarchy, no DDR latency. For models
+        that fit, you get near-zero memory access overhead.
+      </div>
+
+      <h2>What I would do differently</h2>
+
+      <p>The custom CSR interface for the accelerator is brittle — any ABI change breaks
+        the software toolchain. A better design would map the accelerator registers into
+        a memory-mapped I/O window and use normal load/store instructions. The compiler
+        can optimise those; inline assembly is opaque to the register allocator.</p>
+
+      <p>I also hit the SPRAM ceiling at 256 kB, which limits models to about 60 000 INT8
+        parameters. The next step is an external SPI PSRAM (e.g., Espressif ESP-PSRAM64H,
+        8 MB) with a prefetch buffer in fabric — trades latency for capacity. That
+        project is in progress.</p>
+
+      <p>RTL source and synthesis scripts on <a href="https://github.com/YOUR_GITHUB" target="_blank" rel="noopener"
+          style="color:var(--red);">GitHub</a>.</p>
+
     </div>
-
-    <h2>Power and timing results</h2>
-
-    <p>Measured on a custom breakout board with a Nordic Power Profiler Kit II:</p>
-
-    <ul>
-      <li>Idle (clocks gated): <strong>85 μW</strong> at 1.2 V core</li>
-      <li>Inference active (4-layer MLP, 128 units): <strong>4.2 mW</strong></li>
-      <li>Inference latency: <strong>1.8 ms</strong></li>
-      <li>Energy per inference: <strong>7.6 μJ</strong></li>
-    </ul>
-
-    <p>For comparison, the same model on an STM32L476 Cortex-M4 @ 80 MHz with CMSIS-NN
-    takes 3.1 ms and consumes ~18 mW active — about 56 μJ per inference. The softcore
-    approach is 7× more energy-efficient despite running at 3× lower clock speed, because
-    the datapath width is matched to the workload.</p>
-
-    <div class="callout">
-      <span class="icon">⚡</span>
-      <strong>The key insight:</strong> energy efficiency in inference is dominated by
-      memory bandwidth, not compute. The iCE40 SPRAM at 256 kB is small but it sits
-      directly on the fabric crossbar — no cache hierarchy, no DDR latency. For models
-      that fit, you get near-zero memory access overhead.
-    </div>
-
-    <h2>What I would do differently</h2>
-
-    <p>The custom CSR interface for the accelerator is brittle — any ABI change breaks
-    the software toolchain. A better design would map the accelerator registers into
-    a memory-mapped I/O window and use normal load/store instructions. The compiler
-    can optimise those; inline assembly is opaque to the register allocator.</p>
-
-    <p>I also hit the SPRAM ceiling at 256 kB, which limits models to about 60 000 INT8
-    parameters. The next step is an external SPI PSRAM (e.g., Espressif ESP-PSRAM64H,
-    8 MB) with a prefetch buffer in fabric — trades latency for capacity. That
-    project is in progress.</p>
-
-    <p>RTL source and synthesis scripts on <a href="https://github.com/YOUR_GITHUB" target="_blank" rel="noopener" style="color:var(--red);">GitHub</a>.</p>
 
   </div>
 
-</div>
+  <footer class="site-footer">
+    made with care · <a href="https://github.com/YOUR_GITHUB" target="_blank" rel="noopener">source</a>
+  </footer>
 
-<footer class="site-footer">
-  made with care · <a href="https://github.com/YOUR_GITHUB" target="_blank" rel="noopener">source</a>
-</footer>
-
-<script src="../js/main.js"></script>
+  <script src="../js/main.js"></script>
 </body>
+
 </html>
