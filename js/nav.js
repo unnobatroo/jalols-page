@@ -1,6 +1,6 @@
 const SITE = {
-  github: "https://github.com/YOUR_GITHUB",
-  linkedin: "https://linkedin.com/in/YOUR_LINKEDIN",
+  github: "https://github.com/unnobatroo",
+  linkedin: "https://linkedin.com/in/unnobatroo",
   email: "mailto:unnobatroo@icloud.com",
 };
 
