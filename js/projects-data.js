@@ -24,10 +24,10 @@ window.PROJECTS = [
     thumbAlt: "Wildfire sensor node PCB",
     date: "2024-11-03",
     status: "deployed · 4 nodes live",
-    cats: ["edge-ai", "climate", "embedded"],
+    cats: ["embedded"],
     featured: true,
     links: [
-      { label: "github", url: "https://github.com/YOUR_GITHUB/wildfire-sensor" },
+      { label: "github", url: "https://github.com/unnobatroo/wildfire-sensor" },
     ],
   },
   {
@@ -38,7 +38,7 @@ window.PROJECTS = [
     thumbAlt: "Hydrophone deployment rig",
     date: "2024-06-14",
     status: "field trial · Philippines",
-    cats: ["edge-ai", "climate", "audio"],
+    cats: ["embedded"],
     featured: false,
     links: [
     ],
@@ -51,7 +51,7 @@ window.PROJECTS = [
     thumbAlt: "Grid model output chart",
     date: "2023-11-20",
     status: "published · COP29 annex",
-    cats: ["climate", "policy", "python"],
+    cats: ["paper"],
     featured: false,
     links: [
       { label: "paper", url: "#" },

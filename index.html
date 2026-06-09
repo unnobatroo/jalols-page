@@ -12,39 +12,55 @@
 <body data-page="work" data-root="">
   <script src="js/nav.js"></script>
 
-  <!-- ── HERO ── -->
-  <div class="page-hero-wrap">
-    <div class="header-container">
-      <h1 class="header-title">jaloliddin "jalol" ismailov</h1>
-      <div class="header-icons">
-        <a href="https://github.com/unnobatroo" target="_blank" rel="noopener">github</a>
-        <a href="mailto:unnobatroo@icloud.com">email</a>
-        <a href="https://linkedin.com/in/unnobatroo" target="_blank" rel="noopener">linkedin</a>
-      </div>
-      <div class="header-blurb">
-        building hardware that thinks<br>at the edge of the climate crisis
+  <main id="main-content">
+
+    <!-- hero -->
+    <div class="page-hero-wrap">
+      <div class="header-container">
+        <h1 class="header-title">jaloliddin "jalol" ismailov</h1>
+        <!-- drop your own SVGs into img/icons/ to replace these -->
+        <div class="header-icons">
+          <a href="https://github.com/unnobatroo" target="_blank" rel="noopener" aria-label="GitHub">
+            <img src="img/icons/github.svg" alt="" />
+          </a>
+          <a href="https://linkedin.com/in/unnobatroo" target="_blank" rel="noopener" aria-label="LinkedIn">
+            <img src="img/icons/linkedin.svg" alt="" />
+          </a>
+          <a href="mailto:unnobatroo@icloud.com" aria-label="Email">
+            <img src="img/icons/email.svg" alt="" />
+          </a>
+        </div>
+        <p class="header-blurb">
+          building hardware that thinks<br>at the edge of the climate crisis
+        </p>
       </div>
     </div>
-  </div>
 
-  <!-- ── PROJECTS ── -->
-  <div class="page-content">
+    <!-- projects -->
+    <div class="page-content">
 
-    <div class="projectThumbs-filterContainer" id="filter-tabs"></div>
+      <div class="projectThumbs-filterContainer" id="filter-tabs" role="group" aria-label="filter by category">
+        <button class="projectThumbs-filter projectThumbs-filter--selected" data-cat="all" aria-pressed="true">all</button>
+        <button class="projectThumbs-filter" data-cat="embedded" aria-pressed="false">embedded</button>
+        <button class="projectThumbs-filter" data-cat="cloud" aria-pressed="false">cloud</button>
+        <button class="projectThumbs-filter" data-cat="paper" aria-pressed="false">paper</button>
+      </div>
 
-    <div class="sort-row" id="sort-row">
-      sort:
-      <button class="active" data-sort="date">newest</button>
-      <button data-sort="alpha">a–z</button>
+      <div class="sort-row" id="sort-row" role="group" aria-label="sort order">
+        <span>sort:</span>
+        <button class="active" data-sort="date" aria-pressed="true">newest</button>
+        <button data-sort="alpha" aria-pressed="false">a–z</button>
+      </div>
+
+      <div class="projectThumbs-thumbContainer" id="project-grid"></div>
+      <p class="no-results hidden" id="no-results" aria-live="polite">no projects match that filter.</p>
+
     </div>
 
-    <div class="projectThumbs-thumbContainer" id="project-grid"></div>
-    <p class="no-results hidden" id="no-results">no projects match that filter.</p>
-
-  </div>
+  </main>
 
   <footer class="site-footer">
-    made with care · <a href="https://github.com/YOUR_GITHUB" target="_blank" rel="noopener">source</a>
+    made with care · <a href="https://github.com/unnobatroo" target="_blank" rel="noopener">source</a>
   </footer>
 
   <script src="js/projects-data.js"></script>
@@ -55,16 +71,6 @@
       const filterBar = document.getElementById('filter-tabs');
       const sortRow = document.getElementById('sort-row');
       let activeCat = 'all', activeSort = 'date';
-
-      // build filter tabs
-      const allCats = ['all', ...[...new Set(PROJECTS.flatMap(p => p.cats))].sort()];
-      allCats.forEach(cat => {
-        const span = document.createElement('span');
-        span.className = 'projectThumbs-filter' + (cat === 'all' ? ' projectThumbs-filter--selected' : '');
-        span.textContent = cat;
-        span.dataset.cat = cat;
-        filterBar.appendChild(span);
-      });
 
       function fmtDate(iso) {
         return new Date(iso + 'T00:00:00').toLocaleDateString('en-US', { year: 'numeric', month: 'long' });
@@ -92,36 +98,40 @@
         visible.forEach(p => {
           const artHTML = p.thumb
             ? `<img class="thumb-art" src="${p.thumb}" alt="${p.thumbAlt}" loading="lazy">`
-            : `<div class="thumb-art-placeholder">[${p.cats[0] || 'project'}]</div>`;
+            : `<div class="thumb-art-placeholder" aria-hidden="true">[${p.cats[0] || 'project'}]</div>`;
           const linksHTML = (p.links || []).map(l =>
             `<a class="thumb-link" href="${l.url}">${l.label}</a>`
           ).join('');
           const tagsHTML = p.cats.map(c => `<span class="thumb-tag">${c}</span>`).join('');
 
-          const card = document.createElement('div');
+          const card = document.createElement('article');
           card.className = 'thumb-container';
           card.innerHTML = `
-        <a class="thumb-titleLink" href="projects/${p.slug}.html">
-          <div class="thumb-artContainer">${artHTML}</div>
-        </a>
-        <a class="thumb-titleLink" href="projects/${p.slug}.html">
-          <div class="thumb-title">${p.title}</div>
-        </a>
-        <div class="thumb-time">${fmtDate(p.date)}${p.status ? ' · ' + p.status : ''}</div>
-        <div class="thumb-blurb">${p.desc}</div>
-        <div class="thumb-tags">${tagsHTML}</div>
-        ${linksHTML ? `<div class="thumb-linkContainer">${linksHTML}</div>` : ''}
-      `;
+            <a class="thumb-titleLink" href="projects/${p.slug}.html" tabindex="-1" aria-hidden="true">
+              <div class="thumb-artContainer">${artHTML}</div>
+            </a>
+            <a class="thumb-titleLink" href="projects/${p.slug}.html">
+              <div class="thumb-title">${p.title}</div>
+            </a>
+            <div class="thumb-time">${fmtDate(p.date)}${p.status ? ' · ' + p.status : ''}</div>
+            <div class="thumb-blurb">${p.desc}</div>
+            <div class="thumb-tags" aria-label="tags">${tagsHTML}</div>
+            ${linksHTML ? `<div class="thumb-linkContainer">${linksHTML}</div>` : ''}
+          `;
           grid.appendChild(card);
         });
       }
 
       filterBar.addEventListener('click', e => {
-        const span = e.target.closest('[data-cat]');
-        if (!span) return;
-        activeCat = span.dataset.cat;
-        filterBar.querySelectorAll('.projectThumbs-filter').forEach(s => s.classList.remove('projectThumbs-filter--selected'));
-        span.classList.add('projectThumbs-filter--selected');
+        const btn = e.target.closest('[data-cat]');
+        if (!btn) return;
+        activeCat = btn.dataset.cat;
+        filterBar.querySelectorAll('[data-cat]').forEach(b => {
+          b.classList.remove('projectThumbs-filter--selected');
+          b.setAttribute('aria-pressed', 'false');
+        });
+        btn.classList.add('projectThumbs-filter--selected');
+        btn.setAttribute('aria-pressed', 'true');
         render();
       });
 
@@ -129,8 +139,12 @@
         const btn = e.target.closest('button[data-sort]');
         if (!btn) return;
         activeSort = btn.dataset.sort;
-        sortRow.querySelectorAll('button').forEach(b => b.classList.remove('active'));
+        sortRow.querySelectorAll('button[data-sort]').forEach(b => {
+          b.classList.remove('active');
+          b.setAttribute('aria-pressed', 'false');
+        });
         btn.classList.add('active');
+        btn.setAttribute('aria-pressed', 'true');
         render();
       });
 

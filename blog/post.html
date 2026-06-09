@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Loading… — Jaloliddin Ismailov</title>
+  <link rel="stylesheet" href="../css/style.css" />
+  <link rel="alternate" type="application/rss+xml" title="Jaloliddin Ismailov" href="/feed.xml" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/github.min.css" />
+</head>
+
+<body data-page="blog" data-root="..">
+  <script src="../js/nav.js"></script>
+
+  <main id="main-content">
+  <div class="page-content page-content--narrow" id="post-wrap">
+    <a class="back-link" href="../blog.html">all posts</a>
+    <div id="post-mount"></div>
+  </div>
+  </main>
+
+  <footer class="site-footer">
+    made with care · <a href="https://github.com/unnobatroo" target="_blank" rel="noopener">source</a>
+  </footer>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/marked/9.1.6/marked.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+  <script>
+    (async function () {
+      const mount = document.getElementById('post-mount');
+      const params = new URLSearchParams(location.search);
+      const slug = params.get('slug');
+
+      if (!slug) {
+        mount.textContent = 'No post specified.';
+        return;
+      }
+
+      let raw;
+      try {
+        const res = await fetch(`../posts/${slug}.md`);
+        if (!res.ok) throw new Error(res.status);
+        raw = await res.text();
+      } catch (e) {
+        mount.textContent = 'Post not found.';
+        return;
+      }
+
+      /* Parse YAML-ish front matter */
+      let content = raw;
+      const meta = { title: slug, date: '', tags: [], excerpt: '' };
+      const fmMatch = raw.match(/^---\n([\s\S]*?)\n---\n/);
+      if (fmMatch) {
+        const fm = fmMatch[1];
+        content = raw.slice(fmMatch[0].length);
+        meta.title = (fm.match(/^title:\s*(.+)$/m) || [])[1]?.trim() || slug;
+        meta.date = (fm.match(/^date:\s*(.+)$/m) || [])[1]?.trim() || '';
+        meta.excerpt = (fm.match(/^excerpt:\s*(.+)$/m) || [])[1]?.trim() || '';
+        const tagsLine = (fm.match(/^tags:\s*\[(.+)\]$/m) || [])[1] || '';
+        meta.tags = tagsLine.split(',').map(t => t.trim()).filter(Boolean);
+      }
+
+      document.title = `${meta.title} — Jaloliddin Ismailov`;
+
+      /* Render markdown → HTML */
+      marked.use({ gfm: true, breaks: false });
+      const htmlBody = marked.parse(content);
+
+      const fmtDate = iso =>
+        iso ? new Date(iso + 'T00:00:00').toLocaleDateString('en-US',
+          { year: 'numeric', month: 'long', day: 'numeric' }) : '';
+
+      const tagsHTML = meta.tags.map(t => `<span class="tag">${t}</span>`).join('');
+
+      mount.innerHTML = `
+        <div class="post-header">
+          <h1>${meta.title}</h1>
+          <div class="post-meta">
+            <span>${fmtDate(meta.date)}</span>
+            ${meta.tags.length ? `<span>·</span><div class="post-tags">${tagsHTML}</div>` : ''}
+          </div>
+        </div>
+        <div class="post-body" id="post-body">${htmlBody}</div>
+      `;
+
+      /* Syntax highlight all code blocks */
+      mount.querySelectorAll('pre code').forEach(el => hljs.highlightElement(el));
+
+      /* Wrap each <pre> in code-block-wrap with line numbers + collapse toggle.
+         Snapshot the list first — DOM mutations would skip nodes in a live query. */
+      [...mount.querySelectorAll('#post-body pre')].forEach(pre => {
+        const code = pre.querySelector('code');
+        const langClass = [...(code?.classList || [])].find(c => c.startsWith('language-'));
+        const lang = langClass ? langClass.slice(9) : 'code';
+        const lineCount = (code?.textContent || pre.textContent).trimEnd().split('\n').length;
+        const lineNums = Array.from({ length: lineCount }, (_, i) => i + 1).join('\n');
+
+        const wrapper = document.createElement('div');
+        wrapper.className = 'code-block-wrap';
+
+        const header = document.createElement('div');
+        header.className = 'code-block-header';
+        header.innerHTML = `<span class="lang">${lang}</span><span></span><button class="toggle-btn">[collapse]</button>`;
+
+        const body = document.createElement('div');
+        body.className = 'code-block-body';
+
+        const lineNumDiv = document.createElement('div');
+        lineNumDiv.className = 'line-numbers';
+        lineNumDiv.textContent = lineNums;
+
+        pre.classList.add('code');
+        body.appendChild(lineNumDiv);
+
+        /* insertBefore first so wrapper is in the right DOM position,
+           then appendChild(pre) moves pre out of its old location into body */
+        pre.parentNode.insertBefore(wrapper, pre);
+        body.appendChild(pre);
+
+        wrapper.appendChild(header);
+        wrapper.appendChild(body);
+      });
+
+      /* Collapse toggle */
+      mount.querySelectorAll('.toggle-btn').forEach(btn => {
+        btn.addEventListener('click', () => {
+          const body = btn.closest('.code-block-wrap').querySelector('.code-block-body');
+          const collapsed = body.classList.toggle('collapsed');
+          btn.textContent = collapsed ? '[expand]' : '[collapse]';
+        });
+      });
+    })();
+  </script>
+</body>
+
+</html>

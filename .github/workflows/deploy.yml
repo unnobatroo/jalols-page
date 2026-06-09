@@ -27,10 +27,12 @@ jobs:
       - name: Setup Pages
         uses: actions/configure-pages@v4
 
+      - name: Build (generate posts.json and feed.xml from posts/*.md)
+        run: node scripts/build.js
+
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3
         with:
-          # Upload entire repo (pure static site, no build step needed)
           path: '.'
 
       - name: Deploy to GitHub Pages

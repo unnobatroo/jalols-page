@@ -1,0 +1,37 @@
+[
+  {
+    "slug": "edge-inference-power-budget",
+    "title": "Fitting Neural Nets Inside a Coin-Cell Power Budget",
+    "date": "2025-03-11",
+    "excerpt": "How I used quantisation-aware training and MCUNet to push inference to 32 μW — and what I got wrong the first three times.",
+    "type": "html",
+    "tags": [
+      "edge-ai",
+      "embedded",
+      "power"
+    ]
+  },
+  {
+    "slug": "cop29-technical-annex",
+    "title": "What the COP29 Technical Annex Actually Says About Grid Storage",
+    "date": "2024-12-02",
+    "excerpt": "A close reading of Annex III — the parts that got buried under the headlines, and why they matter for deployed systems.",
+    "type": "html",
+    "tags": [
+      "climate",
+      "policy"
+    ]
+  },
+  {
+    "slug": "risc-v-softcore-fpga",
+    "title": "Building a Minimal RISC-V Softcore for Inference",
+    "date": "2024-07-28",
+    "excerpt": "Synthesising a hand-rolled RV32IM on a $4 iCE40 and getting a CNN to run on it. Spoiler: the toolchain is the hard part.",
+    "type": "html",
+    "tags": [
+      "embedded",
+      "fpga",
+      "risc-v"
+    ]
+  }
+]
