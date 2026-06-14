@@ -7,10 +7,18 @@
  *   node scripts/build.js          # run manually before local preview
  *   GitHub Actions runs this automatically on every push
  *
- * To add a new post:
+ * To add a new post or project:
  *   1. Copy posts/_template.md → posts/your-slug.md
  *   2. Fill in front matter + write content
  *   3. git add posts/your-slug.md && git push  (CI handles the rest)
+ *
+ * Front matter fields:
+ *   title   — required
+ *   date    — required, YYYY-MM-DD
+ *   excerpt — shown on index cards
+ *   tags    — array e.g. [embedded, climate]
+ *   type    — "post" | "project" (default: "post")
+ *   status  — optional short string shown on project cards
  */
 
 'use strict';
@@ -31,15 +39,14 @@ function parseFrontMatter(src) {
     title:   get('title'),
     date:    get('date'),
     excerpt: get('excerpt'),
-    type:    get('type') || 'markdown',   // 'markdown' | 'html'
+    type:    get('type') || 'post',
+    status:  get('status'),
     tags:    tagsRaw.split(',').map(t => t.trim()).filter(Boolean),
   };
 }
 
 function postUrl(p) {
-  return p.type === 'html'
-    ? `${SITE_URL}/blog/${p.slug}.html`
-    : `${SITE_URL}/blog/post.html?slug=${p.slug}`;
+  return `${SITE_URL}/post.html?slug=${p.slug}`;
 }
 
 // ── scan ──────────────────────────────────────────────────────────────────────
@@ -63,7 +70,7 @@ fs.writeFileSync(
   JSON.stringify(posts, null, 2),
   'utf8'
 );
-console.log(`posts.json  ✓  (${posts.length} posts)`);
+console.log(`posts.json  ✓  (${posts.length} entries)`);
 
 // ── feed.xml ──────────────────────────────────────────────────────────────────
 const DAYS   = ['Sun','Mon','Tue','Wed','Thu','Fri','Sat'];
