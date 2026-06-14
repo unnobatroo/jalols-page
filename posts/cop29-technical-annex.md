@@ -1,9 +1,8 @@
 ---
 title: What the COP29 Technical Annex Actually Says About Grid Storage
 date: 2024-12-02
-tags: [climate, policy]
+tags: [climate policy]
 excerpt: A close reading of Annex III — the parts that got buried under the headlines, and why they matter for deployed systems.
-type: post
 ---
 
 Baku produced a lot of noise and one document that most negotiators never read end-to-end: the *Technical Annex on Flexible Grid Resources and Long-Duration Storage*, appended to the Global Stocktake outcome. Here is a close read of the provisions that matter for engineers and project developers, stripped of the usual COP abstraction.

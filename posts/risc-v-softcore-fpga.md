@@ -3,7 +3,6 @@ title: Building a Minimal RISC-V Softcore for Inference
 date: 2024-07-28
 tags: [embedded, fpga, risc-v]
 excerpt: Synthesising a hand-rolled RV32IM on a $4 iCE40 and getting a CNN to run on it. Spoiler: the toolchain is the hard part.
-type: post
 ---
 
 The Lattice iCE40UP5K is a $4 FPGA with 5280 LUTs, 1 Mb SPRAM, and a hard SPI block. It is not supposed to run a CPU *and* do useful inference. I did it anyway, mostly to understand where the real bottlenecks are in ultra-low-power neural network execution — and partly because fitting a 32-bit RISC-V core plus an INT8 matrix engine into 4 200 LUTs felt like a good puzzle.

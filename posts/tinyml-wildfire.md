@@ -3,8 +3,6 @@ title: TinyML Wildfire Sensor
 date: 2024-11-03
 tags: [edge-ai, climate, embedded]
 excerpt: On-device smoke & thermal anomaly detection at 40 μW on a Cortex-M4. Deployed in Ventura County, CA.
-type: project
-status: deployed · 4 nodes live · Ventura County, CA
 ---
 
 Wildfire detection is a last-mile problem: satellite revisit is too slow, aerial cameras too expensive, and LoRa gateways sparse in the chaparral. This project puts a full smoke-and-heat classifier on an **STM32L476** Cortex-M4 running at 4 MHz from a 2 × AA cell, targeting **40 μW** in duty-cycled inference mode.
