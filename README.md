@@ -57,7 +57,3 @@ regenerates it from `posts/*.md` on every push (via GitHub Actions), so you
 never edit it by hand. Every page links it two ways: a `<link rel="alternate">`
 tag in `<head>` (so browsers and feed readers auto-discover it) and a visible
 `rss` link in the footer.
-
-## License
-
-MIT — see [LICENSE](LICENSE).
