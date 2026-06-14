@@ -64,7 +64,7 @@ body {
   color: var(--text);
   font-family: var(--serif);
   font-size: var(--fs-base);
-  line-height: 1.5;
+  line-height: 1.35;
   min-height: 100vh;
 }
 
@@ -92,7 +92,7 @@ video {
   right: 0;
   display: flex;
   justify-content: center;
-  gap: var(--sp-7);
+  gap: var(--sp-6);
   font-family: var(--sans);
 }
 
@@ -119,12 +119,12 @@ video {
 
 .header-container {
   margin-top: var(--sp-11);
-  padding: 0 var(--sp-5);
+  padding: 0 var(--sp-6);
   display: flex;
   flex-direction: column;
   align-items: center;
   text-align: center;
-  gap: var(--sp-2);                 /* equal, slightly tight spacing between name / icons / blurb */
+  gap: var(--sp-4);                 /* equal, slightly tight spacing between name / icons / blurb */
 }
 
 .header-title {
@@ -152,15 +152,15 @@ video {
 }
 
 .header-icons a img {
-  width: 18px;
-  height: 18px;
+  width: 24px;
+  height: 24px;
 }
 
 .header-blurb {
   font-family: var(--serif);
   font-size: var(--fs-base);
   color: var(--text);
-  line-height: 1.5;
+  line-height: 1.35;
 }
 
 /* ── layout ── */
@@ -268,7 +268,7 @@ video {
   font-size: var(--fs-md);
   font-weight: 700;
   color: var(--text);
-  line-height: 1.2;
+  line-height: 1.35;
 }
 
 .thumb-titleLink:hover .thumb-title {
@@ -285,7 +285,7 @@ video {
   font-family: var(--serif);
   font-size: var(--fs-sm);
   color: var(--text);
-  line-height: 1.45;
+  line-height: 1.35;
 }
 
 .thumb-tags {
@@ -322,7 +322,7 @@ video {
   font-family: var(--sans);
   font-size: var(--fs-xl);
   font-weight: 700;
-  line-height: 1.15;
+  line-height: 1.35;
   margin-bottom: var(--sp-2);
 }
 
@@ -350,7 +350,7 @@ a.tag:hover {
 .post-body {
   font-family: var(--serif);
   font-size: var(--fs-base);
-  line-height: 1.6;
+  line-height: 1.35;
   color: var(--text);
 }
 
@@ -474,7 +474,7 @@ code {
   color: var(--border);
   font-family: var(--mono);
   font-size: var(--fs-xs);
-  line-height: 1.55;
+  line-height: 1.5;
   text-align: right;
   user-select: none;
   border-right: var(--hairline);
@@ -489,7 +489,7 @@ pre.code {
   overflow-x: auto;
   font-family: var(--mono);
   font-size: var(--fs-xs);
-  line-height: 1.55;
+  line-height: 1.5;
   background: var(--bg);
 }
 
@@ -608,7 +608,7 @@ pre.code code {
   color: #767676;
   border: 1px dashed var(--border);
   padding: var(--sp-3) var(--sp-4);
-  line-height: 1.55;
+  line-height: 1.35;
   font-style: italic;
 }
 

@@ -24,6 +24,5 @@ dist/
 _site/
 
 posts.json
-feed.xml
 
 posts/*/

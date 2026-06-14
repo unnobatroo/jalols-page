@@ -3,7 +3,6 @@ title: Fitting Neural Nets Inside a Coin-Cell Power Budget
 date: 2025-03-11
 tags: [edge-ai, embedded, power]
 excerpt: How I used quantisation-aware training and MCUNet to push inference to 32 μW — and what I got wrong the first three times.
-type: post
 ---
 
 The pitch always sounds elegant: deploy a neural network on a microcontroller, run it on a battery, leave it in a field for a year. The reality is that getting there takes a long sequence of humbling failures. Here's what the third and fourth attempts taught me.
