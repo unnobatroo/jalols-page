@@ -1,7 +1,7 @@
 ---
 title: TinyML Wildfire Sensor
 date: 2024-11-03
-tags: [edge-ai, climate, embedded]
+tags: [edge-ai, climate policy, embedded]
 excerpt: On-device smoke & thermal anomaly detection at 40 μW on a Cortex-M4. Deployed in Ventura County, CA.
 ---
 
@@ -17,7 +17,7 @@ STM32L476RG · MLX90640 thermal array (32×24) · SDS011 particulate sensor · S
 
 Bare-metal C on FreeRTOS · CMSIS-NN inference kernels · MCUNet INT8 weights · custom LoRaWAN MAC. CMake + arm-none-eabi-gcc 13.2. Flash: 96 KB text, 38 KB weights, 12 KB stack/heap.
 
-## Model Training
+## Model training
 
 ```python
 import torch
@@ -38,7 +38,7 @@ def train_epoch(loader, optimizer, criterion):
         loss.backward(); optimizer.step()
 ```
 
-## On-Device Inference
+## On-Device inference
 
 ```c
 void inference_loop(void) {

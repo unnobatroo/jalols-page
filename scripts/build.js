@@ -85,10 +85,19 @@ function writePostPage(p) {
   <script>window.POST_SLUG = ${JSON.stringify(p.slug)};</script>
   <script src="/assets/js/nav.js"></script>
   <main id="main-content">
-    <div class="page-content page-content--narrow"><div id="post-mount"></div></div>
+    <div class="page-content page-content--narrow deco-clearfix">
+      <!-- deco: drop your own pic here, floats right next to the post header -->
+      <!-- <img class="deco deco--right" src="/assets/img/deco/your-pic.jpg" alt="" width="180"> -->
+      <div id="post-mount"></div>
+      <!-- deco: pic at the end of the post -->
+      <!-- <img class="deco deco--center" src="/assets/img/deco/your-pic-end.jpg" alt="" width="300"> -->
+    </div>
   </main>
   <footer class="site-footer">
-    made with care · <a href="https://github.com/unnobatroo/jalols-page" target="_blank" rel="noopener">source</a> · <a href="/feed.xml">rss</a>
+    <div class="site-footer-inner">
+      <span>© Jaloliddin Ismailov 2026</span>
+      <a href="https://github.com/unnobatroo/jalols-page">source</a>
+    </div>
   </footer>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/marked/9.1.6/marked.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
