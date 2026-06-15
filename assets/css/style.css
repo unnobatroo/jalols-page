@@ -1,42 +1,77 @@
+/* ==========================================================================
+   jalols.page — site styles
+
+   HOW TO EDIT THIS FILE
+   • Most of the look is controlled by the variables ("tokens") in :root below.
+     Change a colour or size there once and it updates across the whole site.
+   • Everything else is grouped into sections, each marked with a  ── name ──
+     banner so you can jump straight to the part you want.
+   • Colours are hex (#rrggbb). Sizes are px unless noted. var(--x) means
+     "use the token called --x defined in :root".
+   ========================================================================== */
+
+/* Web fonts (Google Fonts). PT Serif = body text, JetBrains Mono = code/labels.
+   To change fonts, swap them here AND in the --serif / --mono tokens below. */
 @import url('https://fonts.googleapis.com/css2?family=PT+Serif:ital,wght@0,400;0,700;1,400;1,700&family=JetBrains+Mono:wght@400;500&display=swap');
 
-/* ── tokens ── */
+/* ── tokens (edit these to restyle the whole site) ── */
 :root {
-  /* links — tema.ru model: blue → purple (visited) → red (hover),
-     with a pale-tint underline that's lighter than the text */
+  /* Links — tema.ru model: blue → purple (visited) → red (hover).
+     The "underline" is a thin bottom border in a pale tint of the text. */
   --accent: #008ace;
+  /* default (unvisited) link colour */
   --link-visited: #b40eb4;
+  /* link colour after you've visited it */
   --link-hover: #cc0000;
+  /* link colour on mouse hover */
   --ul: #b2ccf0;
+  /* underline tint — default */
   --ul-visited: #e0b2e0;
+  /* underline tint — visited */
   --ul-hover: #f0b2b2;
+  /* underline tint — hover */
   --link-current: #ebebcf;
+  /* highlight behind the current page's nav link */
 
+  /* Base palette */
   --text: #111;
+  /* main text colour */
   --muted: #666;
+  /* dates, tags, secondary text */
   --bg: #fff;
+  /* page background */
   --surface: rgba(0, 0, 0, .05);
+  /* faint grey fill (chips, code bg) */
   --border: #bbb;
+  /* hairlines, boxes, dividers */
 
+  /* Fonts (keep in sync with the @import line above) */
   --serif: "PT Serif", Georgia, serif;
-  --mono:  "JetBrains Mono", Menlo, Consolas, monospace;
+  --mono: "JetBrains Mono", Menlo, Consolas, monospace;
 
+  /* Font-size scale — from smallest to largest */
   --fs-xs: 12px;
+  /* tags, meta, code */
   --fs-sm: 14px;
+  /* small blurbs */
   --fs-base: 16px;
+  /* body text */
   --fs-lg: 22px;
+  /* post h2 */
   --fs-xl: 36px;
+  /* post title */
   --fs-2xl: 48px;
+  /* home hero name */
 
   --gap: 20px;
-  /* standard spacing unit */
+  /* spacing unit */
   --wide: 1200px;
-  /* content cap */
+  /* page width cap */
   --prose: 860px;
   /* post reading width */
 }
 
-/* ── reset ── */
+/* ── reset (sensible defaults: no stray margins, predictable sizing) ── */
 *,
 *::before,
 *::after {
@@ -64,6 +99,10 @@ video {
   max-width: 100%;
 }
 
+/* ── links ──
+   The underline is a bottom border (not text-decoration) so it can be a
+   softer, paler colour than the text. Three states below: default / visited
+   / hover. To turn underlines off site-wide, delete the border-bottom lines. */
 a {
   color: var(--accent);
   text-decoration: none;
@@ -81,8 +120,8 @@ a:hover {
   border-bottom-color: var(--ul-hover);
 }
 
-/* links wrapping icons, chips, card images, or in the nav keep the
-   color states but drop the pale underline */
+/* These links keep the colours but drop the underline (they wrap icons,
+   chips, card images, or sit in the nav). Add a class here to exempt more. */
 .menu-link,
 .header-icons a,
 .thumb-titleLink,
@@ -90,12 +129,13 @@ a:hover {
   border-bottom: none;
 }
 
+/* Keyboard focus ring (accessibility — shown when tabbing, not on click) */
 :focus-visible {
   outline: 2px solid var(--accent);
   outline-offset: 2px;
 }
 
-/* ── nav ── */
+/* ── nav (top menu, built by nav.js) ── */
 .menu-container {
   display: flex;
   justify-content: center;
@@ -103,6 +143,7 @@ a:hover {
   padding: 2em 0;
 }
 
+/* The current page's nav link: dark text on a pale highlight */
 .menu-link--active,
 .menu-link--active:hover {
   color: var(--text);
@@ -110,7 +151,7 @@ a:hover {
   padding: 1px 4px;
 }
 
-/* ── hero ── */
+/* ── hero (big name + social icons, home page only) ── */
 .page-hero-wrap {
   display: flex;
   flex-direction: column;
@@ -159,7 +200,9 @@ a:hover {
   line-height: 1.35;
 }
 
-/* ── layout ── */
+/* ── layout ──
+   .page-content is the centered column. Add --narrow for the slimmer
+   reading width used on post and bio pages. */
 .page-content {
   max-width: var(--wide);
   margin: 32px auto 80px;
@@ -170,7 +213,7 @@ a:hover {
   max-width: var(--prose);
 }
 
-/* ── filter + sort bar ── */
+/* ── filter + sort bar (home page) ── */
 .filter-bar {
   display: flex;
   justify-content: space-between;
@@ -179,7 +222,8 @@ a:hover {
   margin-bottom: var(--gap);
 }
 
-/* tags grouped on the left, wrapping within their own area */
+/* tags grouped on the left, wrapping within their own area.
+   gap is "row-gap column-gap" — 6px between wrapped lines, 12px between tags */
 .filter-row {
   display: flex;
   flex-wrap: wrap;
@@ -203,6 +247,7 @@ a:hover {
   border: none;
   cursor: pointer;
   padding: 1px 0;
+  transition: color .15s;
 }
 
 .filter-btn:hover {
@@ -216,7 +261,7 @@ a:hover {
 }
 
 .tag-count {
-  margin-left: 2px;
+  margin-left: 4px;
   opacity: .55;
 }
 
@@ -224,15 +269,19 @@ a:hover {
   font-style: normal;
 }
 
-/* ── search ── */
+/* ── search ──
+   The magnifying-glass icon is an inline SVG in the background image below.
+   To recolour it, change stroke='%23666' (%23 = "#"). 34px left padding
+   leaves room for the icon. */
 .search-bar {
   width: 100%;
   font-family: var(--mono);
   font-size: var(--fs-xs);
   color: var(--text);
-  background: var(--surface);
+  background: var(--surface) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16' fill='none' stroke='%23666' stroke-width='1.5'%3E%3Ccircle cx='7' cy='7' r='4.5'/%3E%3Cline x1='10.5' y1='10.5' x2='14' y2='14'/%3E%3C/svg%3E") no-repeat 12px center;
+  background-size: 14px;
   border: 1px solid var(--border);
-  padding: 8px 12px;
+  padding: 8px 12px 8px 34px;
   margin-bottom: var(--gap);
 }
 
@@ -240,11 +289,14 @@ a:hover {
   color: var(--muted);
 }
 
-/* ── card grid ── */
+/* ── card grid (post thumbnails on the home page) ──
+   3 columns on desktop. gap is "row-gap column-gap": 24px between rows,
+   4px between columns. The two @media blocks drop to 2 then 1 column as the
+   screen narrows. */
 .card-grid {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
-  gap: calc(var(--gap) * 1.2) 4px;
+  gap: calc(var(--gap) * 1.2) 16px;
 }
 
 @media (max-width: 960px) {
@@ -271,12 +323,14 @@ a:hover {
   aspect-ratio: 16/9;
   object-fit: cover;
   border: 1px solid var(--border);
+  transition: opacity .15s;
 }
 
 .thumb-titleLink {
   display: block;
 }
 
+/* Slight fade on the thumbnail when you hover its title link */
 .thumb-titleLink:hover .thumb-image {
   opacity: .88;
 }
@@ -304,14 +358,24 @@ a:hover {
   gap: 4px;
 }
 
+/* Plain chip; clickable to filter the grid by that tag.
+   Hover mirrors the post-page tags: darker chip + red text. */
 .thumb-tag {
   font-family: var(--mono);
   font-size: 11px;
   color: var(--muted);
   background: var(--surface);
   padding: 1px 4px;
+  cursor: pointer;
+  transition: background .15s, color .15s;
 }
 
+.thumb-tag:hover {
+  background: var(--border);
+  color: var(--link-hover);
+}
+
+/* Shown when a search/filter matches nothing */
 .no-results {
   font-family: var(--mono);
   font-size: var(--fs-xs);
@@ -319,20 +383,21 @@ a:hover {
   padding: 2rem 0;
 }
 
+/* Utility: hide an element completely (toggled by JS) */
 .hidden {
   display: none !important;
 }
 
 /* ── post page ── */
 .post-header {
-  margin-bottom: 40px;
+  margin-bottom: 28px;
 }
 
 .post-header h1 {
   font-size: var(--fs-xl);
   font-weight: 700;
   line-height: 1.2;
-  margin-bottom: 8px;
+  margin-bottom: 12px;
 }
 
 .post-meta {
@@ -341,15 +406,19 @@ a:hover {
   color: var(--muted);
 }
 
+/* Tag chips in the post header. The "+ .tag" rule adds 6px between chips
+   so neighbouring chips don't merge into one block. */
 .tag {
   display: inline-block;
   font-family: var(--mono);
   font-size: 11px;
+  color: var(--muted);
   background: var(--surface);
   padding: 1px 4px;
+  transition: color .15s, background .15s;
 }
 
-.tag + .tag {
+.tag+.tag {
   margin-left: 6px;
 }
 
@@ -357,6 +426,8 @@ a:hover {
   background: var(--border);
 }
 
+/* The article body. Markdown is rendered into here by post.js, so these
+   rules style the resulting headings, paragraphs, lists, quotes, etc. */
 .post-body {
   font-size: var(--fs-base);
   line-height: 1.5;
@@ -365,17 +436,17 @@ a:hover {
 .post-body h2 {
   font-size: var(--fs-lg);
   font-weight: 700;
-  margin: 1.8em 0 .5em;
+  margin: 1.1em 0 .4em;
 }
 
 .post-body h3 {
   font-size: 18px;
   font-weight: 700;
-  margin: 1.4em 0 .4em;
+  margin: 0.7em 0 .3em;
 }
 
 .post-body p {
-  margin-bottom: 1.1em;
+  margin-bottom: 0.75em;
 }
 
 .post-body p:last-child {
@@ -385,11 +456,11 @@ a:hover {
 .post-body ul,
 .post-body ol {
   padding-left: 1.5rem;
-  margin-bottom: 1.1em;
+  margin-bottom: .9em;
 }
 
 .post-body li {
-  margin-bottom: .3em;
+  margin-bottom: .1em;
 }
 
 .post-body strong {
@@ -414,12 +485,14 @@ a:hover {
   font-style: italic;
 }
 
-/* ── code blocks ── */
+/* ── code blocks ──
+   Inline `code` plus full blocks. post.js wraps each block as:
+   .code-block-wrap > .code-block-header + .code-block-body(.line-numbers + pre.code) */
 code {
   font-family: var(--mono);
   font-size: var(--fs-xs);
   background: var(--surface);
-  padding: 1px 4px;
+  padding: 1px 8px;
 }
 
 .code-block-wrap {
@@ -452,6 +525,7 @@ code {
   font-size: 11px;
   color: var(--muted);
   cursor: pointer;
+  transition: color .15s;
 }
 
 .toggle-btn:hover {
@@ -462,6 +536,7 @@ code {
   display: flex;
 }
 
+/* When collapsed (via the [collapse] button) the code body is hidden */
 .code-block-body.collapsed {
   display: none;
 }
@@ -498,7 +573,9 @@ pre.code code {
   font-size: inherit;
 }
 
-/* highlight.js — VS Code "Light Modern" (light_plus token colors) */
+/* Syntax highlighting — colours mirror VS Code "Light Modern".
+   Each rule below is one token type; edit the hex value to retheme.
+   The control-keyword split (purple) is driven by a small pass in post.js. */
 .hljs {
   background: transparent !important;
   color: #3b3b3b !important;
@@ -513,7 +590,7 @@ pre.code code {
   color: #00f !important;
 }
 
-/* control-flow keywords (re-tagged in post.js) → purple */
+/* control-flow keywords (if/return/import…, re-tagged in post.js) → purple */
 .hljs-keyword--control {
   color: #af00db !important;
 }
@@ -624,7 +701,10 @@ pre.code code {
   font-style: italic;
 }
 
-/* ── deco images (scattered, tema.ru style) ── */
+/* ── deco images (optional scattered photos, tema.ru style) ──
+   Unused by default — drop an <img class="deco deco--left|right|center">
+   into a page to float a photo there. The clearfix stops floats from
+   spilling out of their container. */
 .deco {
   display: block;
   max-width: 100%;
@@ -668,7 +748,7 @@ pre.code code {
   color: var(--muted);
 }
 
-/* ── mobile ── */
+/* ── mobile (phones, ≤600px wide) — overrides for small screens ── */
 @media (max-width: 600px) {
   .header-title {
     font-size: var(--fs-xl);

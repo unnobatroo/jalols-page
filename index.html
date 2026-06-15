@@ -90,6 +90,7 @@
         items.forEach(it => {
           const btn = document.createElement('button');
           btn.className = 'filter-btn' + (it.value === getActive() ? ' filter-btn--active' : '');
+          btn.dataset.value = it.value;
           btn.innerHTML = it.label;
           btn.addEventListener('click', () => {
             onPick(it.value);
@@ -133,6 +134,21 @@
       // Live search — re-render on every keystroke.
       search.addEventListener('input', () => { query = search.value.trim().toLowerCase(); render(); });
 
+      // Select a tag from anywhere (top filter row or a post's tag chips):
+      // update state, sync the top row's highlight, and redraw.
+      function selectTag(tag) {
+        activeTag = tag;
+        filterRow.querySelectorAll('.filter-btn').forEach(b =>
+          b.classList.toggle('filter-btn--active', b.dataset.value === tag));
+        render();
+      }
+
+      // Clicking a tag chip under a post filters by that tag.
+      grid.addEventListener('click', e => {
+        const chip = e.target.closest('.thumb-tag');
+        if (chip) selectTag(chip.dataset.tag);
+      });
+
       // "2025-03-11" → "11 March 2025" for the card date line.
       const fmtDate = iso =>
         new Date(iso + 'T00:00:00').toLocaleDateString('en-GB', { day: 'numeric', month: 'long', year: 'numeric' });
@@ -150,7 +166,7 @@
         noResults.classList.toggle('hidden', list.length > 0);
 
         list.forEach(p => {
-          const tagsHTML = p.tags.map(t => `<span class="thumb-tag">${t}</span>`).join('');
+          const tagsHTML = p.tags.map(t => `<span class="thumb-tag" data-tag="${t}">${t}</span>`).join('');
           const meta = [fmtDate(p.date), p.status].filter(Boolean).join(' · ');
           // Thumbnail only if build.js found an image in the post; no grey box otherwise.
           const thumb = p.image
