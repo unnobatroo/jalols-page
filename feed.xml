@@ -32,7 +32,7 @@
     <pubDate>Sun, 03 Nov 2024 00:00:00 +0000</pubDate>
     <description><![CDATA[On-device smoke & thermal anomaly detection at 40 μW on a Cortex-M4. Deployed in Ventura County, CA.]]></description>
     <category>edge-ai</category>
-    <category>climate</category>
+    <category>climate policy</category>
     <category>embedded</category>
   </item>
   <item>
@@ -42,8 +42,6 @@
     <pubDate>Sun, 28 Jul 2024 00:00:00 +0000</pubDate>
     <description><![CDATA[Synthesising a hand-rolled RV32IM on a $4 iCE40 and getting a CNN to run on it. Spoiler: the toolchain is the hard part.]]></description>
     <category>embedded</category>
-    <category>fpga</category>
-    <category>risc-v</category>
   </item>
   </channel>
 </rss>
