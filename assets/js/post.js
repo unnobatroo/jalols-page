@@ -54,6 +54,19 @@
     // Syntax-highlight every code block.
     mount.querySelectorAll('pre code').forEach(el => hljs.highlightElement(el));
 
+    // VS Code Light Modern paints control-flow keywords purple but storage
+    // keywords (const/function/class…) blue. highlight.js tags both as
+    // .hljs-keyword, so re-tag the control-flow ones by name to split them.
+    const CONTROL = new Set((
+      'if elif else for foreach while do loop switch case default match when ' +
+      'break continue return goto throw throws try catch except finally raise ' +
+      'with pass assert del yield await import export from as new defer go ' +
+      'range select fallthrough where unless until'
+    ).split(' '));
+    mount.querySelectorAll('.hljs-keyword').forEach(s => {
+      if (CONTROL.has(s.textContent.trim())) s.classList.add('hljs-keyword--control');
+    });
+
     // Wrap each <pre> so it gains a header (language + collapse button) and a
     // line-number gutter. Final structure: .code-block-wrap > header + body(nums + pre).
     mount.querySelectorAll('#post-body pre').forEach(pre => {

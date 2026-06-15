@@ -19,9 +19,9 @@
         <!-- <h1 class="header-title">jaloliddin "jalol" ismailov</h1> -->
          <h1 class="header-title">SITE IN WORK!</h1>
         <div class="header-icons">
-          <a href="https://github.com/unnobatroo" target="_blank" rel="noopener" aria-label="GitHub"><img
+          <a href="https://github.com/unnobatroo" aria-label="GitHub"><img
               src="/assets/img/icons/github.svg" alt="" /></a>
-          <a href="https://linkedin.com/in/unnobatroo" target="_blank" rel="noopener" aria-label="LinkedIn"><img
+          <a href="https://linkedin.com/in/unnobatroo" aria-label="LinkedIn"><img
               src="/assets/img/icons/linkedin.svg" alt="" /></a>
           <a href="mailto:unnobatroo@icloud.com" aria-label="Email"><img src="/assets/img/icons/email.svg" alt="" /></a>
         </div>
@@ -29,20 +29,26 @@
       </div>
     </div>
 
-    <div class="page-content">
+    <div class="page-content deco-clearfix">
+      <!-- deco: drop your own pic here, floats left next to the search bar -->
+      <!-- <img class="deco deco--right" src="/assets/img/deco/your-pic.jpg" alt="" width="160"> -->
       <input type="search" id="search" class="search-bar" placeholder="search posts…" aria-label="Search posts" />
       <div class="filter-bar">
         <div class="filter-row" id="filter-row"></div>
         <div class="sort-row" id="sort-row"></div>
       </div>
       <div class="card-grid" id="card-grid"></div>
+      <!-- deco: another pic below the grid -->
+      <!-- <img class="deco deco--left" src="/assets/img/deco/your-pic-2.jpg" alt="" width="200"> -->
       <p class="no-results hidden" id="no-results">nothing here yet.</p>
     </div>
 
   </main>
   <footer class="site-footer">
-    <a href="https://github.com/unnobatroo/jalols-page" target="_blank" rel="noopener">source</a> · <a
-      href="/feed.xml">rss</a>
+    <div class="site-footer-inner">
+      <span>© Jaloliddin Ismailov 2026</span>
+      <a href="https://github.com/unnobatroo/jalols-page">source</a>
+    </div>
   </footer>
   <script>
     /**
@@ -62,7 +68,6 @@
 
       // View state — every control just mutates these, then calls render().
       let activeTag = 'all';   // selected tag, or 'all'
-      let sortBy = 'date';     // 'date' (newest first) or 'name' (A→Z by title)
       let query = '';          // lowercased search text
       let POSTS = [];
 
@@ -113,11 +118,17 @@
         ...tagsByUse.map(t => ({ value: t, label: t + count(tagCounts[t]) }))],
         () => activeTag, v => { activeTag = v; });
 
-      // Sort controls on the right of the tag row.
-      sortRow.innerHTML = '<span class="sort-label">sort:</span>';
-      buttonRow(sortRow,
-        [{ value: 'date', label: 'date' }, { value: 'name', label: 'name' }],
-        () => sortBy, v => { sortBy = v; });
+      // Sort controls — date only, arrow toggles asc/desc.
+      let sortAsc = false; // newest first by default
+      const sortBtn = document.createElement('button');
+      sortBtn.className = 'filter-btn filter-btn--active';
+      sortBtn.innerHTML = 'date <span class="sort-arrow">↓</span>';
+      sortBtn.addEventListener('click', () => {
+        sortAsc = !sortAsc;
+        sortBtn.querySelector('.sort-arrow').textContent = sortAsc ? '↑' : '↓';
+        render();
+      });
+      sortRow.appendChild(sortBtn);
 
       // Live search — re-render on every keystroke.
       search.addEventListener('input', () => { query = search.value.trim().toLowerCase(); render(); });
@@ -131,9 +142,9 @@
         const list = POSTS
           .filter(p => activeTag === 'all' || p.tags.includes(activeTag))
           .filter(p => !query || `${p.title} ${p.excerpt} ${p.tags.join(' ')}`.toLowerCase().includes(query))
-          .sort(sortBy === 'name'
-            ? (a, b) => a.title.localeCompare(b.title)
-            : (a, b) => new Date(b.date) - new Date(a.date));
+          .sort((a, b) => sortAsc
+            ? new Date(a.date) - new Date(b.date)
+            : new Date(b.date) - new Date(a.date));
 
         grid.innerHTML = '';
         noResults.classList.toggle('hidden', list.length > 0);
