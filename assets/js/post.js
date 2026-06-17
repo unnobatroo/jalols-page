@@ -94,15 +94,19 @@
       wrap.className = 'code-block-wrap';
       const header = document.createElement('div');
       header.className = 'code-block-header';
+      // Live region announces copy confirmation to screen readers without
+      // requiring focus to move to the button.
       header.innerHTML = `<span class="lang">${lang}</span>` +
         `<span class="code-actions">` +
           `<button class="copy-btn" type="button" aria-label="Copy code" title="Copy">${IC.copy}</button>` +
+          `<span class="sr-only" aria-live="polite" aria-atomic="true"></span>` +
           `<button class="toggle-btn" type="button" aria-label="Collapse code" title="Collapse">${IC.up}</button>` +
         `</span>`;
       const body = document.createElement('div');
       body.className = 'code-block-body';
       const nums = document.createElement('div');
       nums.className = 'line-numbers';
+      nums.setAttribute('aria-hidden', 'true'); // decorative; screen readers skip it
       nums.textContent = Array.from({ length: lines }, (_, i) => i + 1).join('\n');
 
       // Insert the wrapper where the <pre> was, then move the <pre> inside it.
@@ -116,6 +120,7 @@
       // Copy the raw source to the clipboard (same-origin, no external calls).
       // Icon briefly flips to a checkmark on success.
       const copyBtn = header.querySelector('.copy-btn');
+      const copyStatus = header.querySelector('.code-actions .sr-only');
       copyBtn.addEventListener('click', async () => {
         const src = (code?.textContent || pre.textContent).replace(/\n$/, '');
         try {
@@ -123,13 +128,16 @@
           copyBtn.innerHTML = IC.check;
           copyBtn.classList.add('copied');
           copyBtn.title = 'Copied';
+          copyStatus.textContent = 'Code copied.';
         } catch {
           copyBtn.title = 'Press ⌘/Ctrl+C to copy';
+          copyStatus.textContent = 'Copy failed. Press ⌘/Ctrl+C to copy.';
         }
         setTimeout(() => {
           copyBtn.innerHTML = IC.copy;
           copyBtn.classList.remove('copied');
           copyBtn.title = 'Copy';
+          copyStatus.textContent = '';
         }, 1500);
       });
     });

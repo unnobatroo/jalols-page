@@ -78,6 +78,10 @@
   let posts = [];
   fetch('/posts.json').then(r => r.json()).then(d => { posts = d; }).catch(() => { });
 
+  // aria-live so screen readers announce results as they appear.
+  box.setAttribute('aria-live', 'polite');
+  box.setAttribute('aria-atomic', 'true');
+
   const fmt = iso => iso
     ? new Date(iso + 'T00:00:00').toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' })
     : '';

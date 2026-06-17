@@ -88,7 +88,7 @@ function writePostPage(p) {
       <!-- search posts (results pop up below); sits above the post header -->
       <div class="post-search">
         <input type="search" id="post-search" class="search-bar" placeholder="search posts…" aria-label="Search posts" autocomplete="off" />
-        <div class="search-results hidden" id="search-results"></div>
+        <div class="search-results hidden" id="search-results" aria-live="polite" aria-atomic="true"></div>
       </div>
       <!-- deco: drop your own pic here, floats right next to the post header -->
       <!-- <img class="deco deco--right" src="/assets/img/deco/your-pic.jpg" alt="" width="180"> -->
