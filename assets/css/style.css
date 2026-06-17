@@ -208,10 +208,7 @@ a:hover {
   height: 32px;
 }
 
-.header-blurb {
-  font-size: var(--fs-base);
-  line-height: 1.35;
-}
+/* .header-blurb intentionally has no rule — it uses the body text style. */
 
 /* ── layout ──
    .page-content is the centered column. Add --narrow for the slimmer
@@ -435,10 +432,7 @@ a:hover {
   color: var(--muted);
 }
 
-.thumb-blurb {
-  font-size: var(--fs-sm);
-  line-height: 1.35;
-}
+/* .thumb-blurb intentionally has no rule — it uses the body text style. */
 
 .thumb-tags {
   display: flex;
@@ -446,22 +440,7 @@ a:hover {
   gap: 4px;
 }
 
-/* Plain chip; clickable to filter the grid by that tag.
-   Hover mirrors the post-page tags: darker chip + red text. */
-.thumb-tag {
-  font-family: var(--mono);
-  font-size: var(--fs-2xs);
-  color: var(--muted);
-  background: var(--surface);
-  padding: 1px 4px;
-  cursor: pointer;
-  transition: background .15s, color .15s;
-}
-
-.thumb-tag:hover {
-  background: var(--border);
-  color: var(--link-hover);
-}
+/* Tag chips share one look — see the .tag / .thumb-tag rule in the post section. */
 
 /* Shown when a search/filter matches nothing */
 .no-results {
@@ -494,15 +473,18 @@ a:hover {
   color: var(--muted);
 }
 
-/* Tag chips in the post header. The "+ .tag" rule adds 6px between chips
-   so neighbouring chips don't merge into one block. */
-.tag {
+/* Tag chips — used both in the post header (.tag) and on the home cards
+   (.thumb-tag). The "+ .tag" rule adds 6px between chips so neighbouring
+   chips don't merge into one block. */
+.tag,
+.thumb-tag {
   display: inline-block;
   font-family: var(--mono);
   font-size: var(--fs-2xs);
   color: var(--muted);
   background: var(--surface);
   padding: 1px 4px;
+  cursor: pointer;
   transition: color .15s, background .15s;
 }
 
@@ -510,8 +492,10 @@ a:hover {
   margin-left: 6px;
 }
 
-.tag:hover {
+.tag:hover,
+.thumb-tag:hover {
   background: var(--border);
+  color: var(--link-hover);
 }
 
 /* The article body. Markdown is rendered into here by post.js, so these
@@ -935,8 +919,14 @@ pre.code code {
   }
 
   .menu-container {
-    gap: 12px;
-    font-size: var(--fs-sm);
+    flex-wrap: wrap;
+    gap: 8px 14px;
+    padding: 1.5em 0;
+  }
+
+  .menu-link {
+    font-size: var(--fs-md);
+    padding: 6px 10px;
   }
 }
 
