@@ -46,7 +46,8 @@
       <div class="card-grid" id="card-grid"></div>
       <!-- deco: another pic below the grid -->
       <!-- <img class="deco deco--left" src="/assets/img/deco/your-pic-2.jpg" alt="" width="200"> -->
-      <p class="no-results hidden" id="no-results">nothing here yet.</p>
+      <p class="no-results hidden" id="no-results" aria-live="polite" aria-atomic="true">nothing here yet.</p>
+      <span class="sr-only" id="results-status" aria-live="polite" aria-atomic="true"></span>
     </div>
 
   </main>
@@ -71,6 +72,7 @@
       const sortRow = document.getElementById('sort-row');
       const search = document.getElementById('search');
       const noResults = document.getElementById('no-results');
+      const resultsStatus = document.getElementById('results-status');
 
       // View state — every control just mutates these, then calls render().
       let activeTag = 'all';   // selected tag, or 'all'
@@ -98,10 +100,15 @@
           btn.className = 'filter-btn' + (it.value === getActive() ? ' filter-btn--active' : '');
           btn.dataset.value = it.value;
           btn.innerHTML = it.label;
+          btn.setAttribute('aria-pressed', it.value === getActive() ? 'true' : 'false');
           btn.addEventListener('click', () => {
             onPick(it.value);
-            row.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('filter-btn--active'));
+            row.querySelectorAll('.filter-btn').forEach(b => {
+              b.classList.remove('filter-btn--active');
+              b.setAttribute('aria-pressed', 'false');
+            });
             btn.classList.add('filter-btn--active');
+            btn.setAttribute('aria-pressed', 'true');
             render();
           });
           row.appendChild(btn);
@@ -129,10 +136,12 @@
       let sortAsc = false; // newest first by default
       const sortBtn = document.createElement('button');
       sortBtn.className = 'filter-btn filter-btn--active';
-      sortBtn.innerHTML = 'date <span class="sort-arrow">↓</span>';
+      sortBtn.innerHTML = 'date <span class="sort-arrow" aria-hidden="true">↓</span>';
+      sortBtn.setAttribute('aria-label', 'Sort by date, newest first');
       sortBtn.addEventListener('click', () => {
         sortAsc = !sortAsc;
         sortBtn.querySelector('.sort-arrow').textContent = sortAsc ? '↑' : '↓';
+        sortBtn.setAttribute('aria-label', sortAsc ? 'Sort by date, oldest first' : 'Sort by date, newest first');
         render();
       });
       sortRow.appendChild(sortBtn);
@@ -144,15 +153,23 @@
       // update state, sync the top row's highlight, and redraw.
       function selectTag(tag) {
         activeTag = tag;
-        filterRow.querySelectorAll('.filter-btn').forEach(b =>
-          b.classList.toggle('filter-btn--active', b.dataset.value === tag));
+        filterRow.querySelectorAll('.filter-btn').forEach(b => {
+          const active = b.dataset.value === tag;
+          b.classList.toggle('filter-btn--active', active);
+          b.setAttribute('aria-pressed', active ? 'true' : 'false');
+        });
         render();
       }
 
-      // Clicking a tag chip under a post filters by that tag.
+      // Clicking or pressing Enter/Space on a tag chip filters by that tag.
       grid.addEventListener('click', e => {
         const chip = e.target.closest('.thumb-tag');
         if (chip) selectTag(chip.dataset.tag);
+      });
+      grid.addEventListener('keydown', e => {
+        if (e.key !== 'Enter' && e.key !== ' ') return;
+        const chip = e.target.closest('.thumb-tag');
+        if (chip) { e.preventDefault(); selectTag(chip.dataset.tag); }
       });
 
       // "2025-03-11" → "11 March 2025" for the card date line.
@@ -174,16 +191,22 @@
         noResults.classList.toggle('hidden', list.length > 0);
 
         list.forEach(p => {
-          const tagsHTML = p.tags.map(t => `<span class="thumb-tag" data-tag="${t}">${t}</span>`).join('');
+          // role="button" + tabindex="0" make tag chips keyboard-accessible
+          // without changing their visual appearance.
+          const tagsHTML = p.tags.map(t =>
+            `<span class="thumb-tag" data-tag="${t}" role="button" tabindex="0" aria-label="Filter by tag: ${t}">${t}</span>`
+          ).join('');
           const meta = [fmtDate(p.date), p.status].filter(Boolean).join(' · ');
-          // Thumbnail only if build.js found an image in the post; no grey box otherwise.
+          // Thumbnail: aria-hidden + tabindex=-1 hides the duplicate link from
+          // screen readers (the title link below already covers navigation).
           const thumb = p.image
-            ? `<a class="thumb-titleLink" href="/posts/${p.slug}/">
-              <img class="thumb-image" src="${p.image}" alt="${p.imageAlt || ''}" loading="lazy" />
+            ? `<a class="thumb-titleLink" href="/posts/${p.slug}/" aria-hidden="true" tabindex="-1">
+              <img class="thumb-image" src="${p.image}" alt="" loading="lazy" />
             </a>`
             : '';
           const card = document.createElement('article');
           card.className = 'thumb-container';
+          card.setAttribute('aria-label', p.title);
           card.innerHTML = `${thumb}
             <a class="thumb-titleLink" href="/posts/${p.slug}/">
               <div class="thumb-title">${p.title}</div>
@@ -193,6 +216,11 @@
             <div class="thumb-tags">${tagsHTML}</div>`;
           grid.appendChild(card);
         });
+
+        // Announce result count to screen readers after filtering/searching.
+        resultsStatus.textContent = list.length === 0
+          ? 'No results found.'
+          : `${list.length} post${list.length === 1 ? '' : 's'} shown.`;
       }
 
       render();
