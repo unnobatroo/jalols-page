@@ -21,9 +21,9 @@
 
   // "resume" is a direct PDF link (opens in a new tab), not an internal page.
   nav.innerHTML =
-    link('work',  '/', 'work') +
+    link('work', '/', 'work') +
     `<a class="menu-link" href="/feed.xml">rss</a>` +
-    `<a class="menu-link" href="/assets/img/jaloliddin_ismailov_resume.pdf">resume</a>` +
+    `<a class="menu-link" href="/assets/img/jaloliddin_ismailov_resume.pdf" target="_blank" rel="noopener noreferrer">resume</a>` +
     link('about', '/bio.html', 'about');
 
   document.body.prepend(nav);

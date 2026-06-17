@@ -16,7 +16,7 @@
 
 /* ── tokens (edit these to restyle the whole site) ── */
 :root {
-  /* Links — tema.ru model: blue → purple (visited) → red (hover).
+  /* Links: blue → purple (visited) → red (hover).
      The "underline" is a thin bottom border in a pale tint of the text. */
   --accent: #008ace;
   /* default (unvisited) link colour */
@@ -50,17 +50,21 @@
   --mono: "JetBrains Mono", Menlo, Consolas, monospace;
 
   /* Font-size scale — from smallest to largest */
+  --fs-2xs: 11px;
+  /* chips, code-block header/buttons */
   --fs-xs: 12px;
   /* tags, meta, code */
   --fs-sm: 14px;
   /* small blurbs */
   --fs-base: 16px;
   /* body text */
+  --fs-md: 18px;
+  /* thumb title, post h3 */
   --fs-lg: 22px;
   /* post h2 */
-  --fs-xl: 36px;
+  --fs-xl: 28px;
   /* post title */
-  --fs-2xl: 48px;
+  --fs-2xl: 36px;
   /* home hero name */
 
   --gap: 20px;
@@ -90,7 +94,16 @@ body {
   color: var(--text);
   font-family: var(--serif);
   line-height: 1.35;
+  /* Flex column + min-height lets the footer stick to the bottom of the
+     viewport even when a page is short (see .site-footer). */
+  display: flex;
+  flex-direction: column;
   min-height: 100vh;
+}
+
+/* The main content grows to fill the space, pushing the footer down. */
+#main-content {
+  flex: 1 0 auto;
 }
 
 img,
@@ -191,8 +204,8 @@ a:hover {
 }
 
 .header-icons img {
-  width: 24px;
-  height: 24px;
+  width: 32px;
+  height: 32px;
 }
 
 .header-blurb {
@@ -273,8 +286,16 @@ a:hover {
    The magnifying-glass icon is an inline SVG in the background image below.
    To recolour it, change stroke='%23666' (%23 = "#"). 34px left padding
    leaves room for the icon. */
+.search-row {
+  display: flex;
+  align-items: center;
+  gap: var(--gap);
+  margin-bottom: var(--gap);
+}
+
 .search-bar {
-  width: 100%;
+  flex: 1;
+  min-width: 0;
   font-family: var(--mono);
   font-size: var(--fs-xs);
   color: var(--text);
@@ -282,10 +303,77 @@ a:hover {
   background-size: 14px;
   border: 1px solid var(--border);
   padding: 8px 12px 8px 34px;
-  margin-bottom: var(--gap);
 }
 
 .search-bar::placeholder {
+  color: var(--muted);
+}
+
+/* ── post-page search (full-width bar with a pop-up results dropdown) ──
+   Pulled up toward the nav and given lots of room below, so it reads as part of
+   the navigation rather than the post header. */
+.post-search {
+  position: relative;
+  margin-top: calc(var(--gap) * -1.5);
+  margin-bottom: calc(var(--gap) * 3);
+}
+
+.post-search .search-bar {
+  width: 100%;
+}
+
+/* The dropdown floats over the post, anchored to the bar above it */
+.search-results {
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: calc(100% + 4px);
+  z-index: 10;
+  background: var(--bg);
+  border: 1px solid var(--border);
+  max-height: 320px;
+  overflow-y: auto;
+}
+
+.search-hit {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  gap: var(--gap);
+  padding: 8px 12px;
+  color: var(--text);
+  border-bottom: 1px solid var(--border);
+}
+
+.search-hit:last-child {
+  border-bottom: none;
+}
+
+.search-hit:visited {
+  color: var(--text);
+}
+
+.search-hit:hover {
+  color: var(--text);
+  background: var(--surface);
+  border-bottom-color: var(--border);
+}
+
+.search-hit-title {
+  font-size: var(--fs-sm);
+}
+
+.search-hit-meta {
+  flex-shrink: 0;
+  font-family: var(--mono);
+  font-size: var(--fs-2xs);
+  color: var(--muted);
+}
+
+.search-empty {
+  padding: 8px 12px;
+  font-family: var(--mono);
+  font-size: var(--fs-xs);
   color: var(--muted);
 }
 
@@ -336,7 +424,7 @@ a:hover {
 }
 
 .thumb-title {
-  font-size: 18px;
+  font-size: var(--fs-md);
   font-weight: 700;
   line-height: 1.35;
 }
@@ -362,7 +450,7 @@ a:hover {
    Hover mirrors the post-page tags: darker chip + red text. */
 .thumb-tag {
   font-family: var(--mono);
-  font-size: 11px;
+  font-size: var(--fs-2xs);
   color: var(--muted);
   background: var(--surface);
   padding: 1px 4px;
@@ -397,7 +485,7 @@ a:hover {
   font-size: var(--fs-xl);
   font-weight: 700;
   line-height: 1.2;
-  margin-bottom: 12px;
+  margin-bottom: 14px;
 }
 
 .post-meta {
@@ -411,7 +499,7 @@ a:hover {
 .tag {
   display: inline-block;
   font-family: var(--mono);
-  font-size: 11px;
+  font-size: var(--fs-2xs);
   color: var(--muted);
   background: var(--surface);
   padding: 1px 4px;
@@ -436,17 +524,19 @@ a:hover {
 .post-body h2 {
   font-size: var(--fs-lg);
   font-weight: 700;
-  margin: 1.1em 0 .4em;
+  margin: 1.4em 0 .6em;
+  line-height: 1.2;
 }
 
 .post-body h3 {
-  font-size: 18px;
+  font-size: var(--fs-md);
   font-weight: 700;
-  margin: 0.7em 0 .3em;
+  margin: 1.1em 0 .6em;
+  line-height: 1.2;
 }
 
 .post-body p {
-  margin-bottom: 0.75em;
+  margin-bottom: 0.50em;
 }
 
 .post-body p:last-child {
@@ -508,7 +598,7 @@ code {
   background: var(--surface);
   border-bottom: 1px solid var(--border);
   font-family: var(--mono);
-  font-size: 11px;
+  font-size: var(--fs-2xs);
   color: var(--muted);
 }
 
@@ -518,32 +608,47 @@ code {
   color: var(--accent);
 }
 
-.toggle-btn {
+/* Header buttons (copy + collapse) are icon-only and share one look. */
+.code-actions {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.toggle-btn,
+.copy-btn {
+  display: inline-flex;
+  align-items: center;
+  padding: 0;
   background: none;
   border: none;
-  font-family: var(--mono);
-  font-size: 11px;
   color: var(--muted);
   cursor: pointer;
   transition: color .15s;
 }
 
-.toggle-btn:hover {
+.toggle-btn:hover,
+.copy-btn:hover {
   color: var(--text);
+}
+
+/* Brief confirmation tint when the checkmark shows after a copy */
+.copy-btn.copied {
+  color: var(--accent);
 }
 
 .code-block-body {
   display: flex;
 }
 
-/* When collapsed (via the [collapse] button) the code body is hidden */
+/* When collapsed (via the collapse button) the code body is hidden */
 .code-block-body.collapsed {
   display: none;
 }
 
 .line-numbers {
   padding: 12px 8px;
-  background: rgba(0, 0, 0, .03);
+  background: var(--surface);
   color: var(--border);
   font-family: var(--mono);
   font-size: var(--fs-xs);
@@ -582,7 +687,10 @@ pre.code code {
 }
 
 /* keywords, storage, literals (true/false/null), this/self, preprocessor → blue */
+/* keywords, storage, primitive type keywords (int/char…), literals, this/self,
+   preprocessor → blue (VS Code storage.type & keyword are both #0000ff) */
 .hljs-keyword,
+.hljs-type,
 .hljs-literal,
 .hljs-variable.language_,
 .hljs-meta,
@@ -590,22 +698,21 @@ pre.code code {
   color: #00f !important;
 }
 
-/* control-flow keywords (if/return/import…, re-tagged in post.js) → purple */
+/* control-flow keywords (if/return/import/#include…, re-tagged in post.js) → purple */
 .hljs-keyword--control {
   color: #af00db !important;
 }
 
-/* built-in types & classes → teal */
-.hljs-built_in,
-.hljs-type,
+/* class & type names → teal */
 .hljs-title.class_,
 .hljs-class .hljs-title {
   color: #267f99 !important;
 }
 
-/* function names → gold */
+/* function names + built-in functions (printf/len/range…) → gold */
 .hljs-title,
-.hljs-title.function_ {
+.hljs-title.function_,
+.hljs-built_in {
   color: #795e26 !important;
 }
 
@@ -637,10 +744,14 @@ pre.code code {
   color: #001080 !important;
 }
 
-/* CSS property names & character escapes → red */
-.hljs-attribute,
-.hljs-char.escape_ {
+/* CSS property names → red */
+.hljs-attribute {
   color: #e50000 !important;
+}
+
+/* character escapes (\n, \t…) → VS Code's slightly brighter red */
+.hljs-char.escape_ {
+  color: #ee0000 !important;
 }
 
 .hljs-operator {
@@ -669,36 +780,88 @@ pre.code code {
   color: #098658 !important;
 }
 
-/* ── bio page ── */
-.bio-tagline {
-  font-size: var(--fs-base);
-  margin-bottom: 40px;
-  line-height: 1.5;
-  color: var(--muted);
+/* ── bio page ──
+   Two columns: text on the left, a photo placeholder pinned right. Stacks on
+   narrow screens (photo drops below the text). */
+.bio-layout {
+  display: flex;
+  align-items: flex-start;
+  gap: calc(var(--gap) * 2);
 }
 
-.bio-section {
-  margin-bottom: 32px;
+.bio-main {
+  flex: 1;
+  min-width: 0;
 }
 
-.bio-section h2 {
-  font-size: var(--fs-xs);
+.bio-title {
+  font-size: var(--fs-xl);
   font-weight: 700;
-  color: var(--muted);
-  border-bottom: 1px solid var(--border);
-  padding-bottom: 4px;
-  margin-bottom: 12px;
-  text-transform: uppercase;
-  letter-spacing: .06em;
+  margin-bottom: 16px;
 }
 
-.bio-placeholder {
-  font-size: var(--fs-sm);
-  color: #767;
-  border: 1px dashed var(--border);
-  padding: 12px 16px;
-  line-height: 1.35;
-  font-style: italic;
+.bio-lead {
+  font-size: var(--fs-base);
+  line-height: 1.5;
+  margin-bottom: 20px;
+}
+
+.bio-list {
+  list-style: none;
+}
+
+/* Each emoji is the bullet: fixed-width marker keeps all the text aligned,
+   and wrapped lines stay indented under the text (not under the emoji). */
+.bio-list li {
+  display: flex;
+  gap: 8px;
+  margin-bottom: 6px;
+  font-size: var(--fs-base);
+  line-height: 1.4;
+}
+
+.bio-list li:last-child {
+  margin-bottom: 0;
+}
+
+.bio-list .bi {
+  flex-shrink: 0;
+  width: 1.5em;
+  text-align: center;
+}
+
+.bio-aside {
+  flex-shrink: 0;
+  width: 220px;
+}
+
+/* Swap for a real <img> later; same box keeps the layout identical. */
+.bio-photo {
+  width: 100%;
+  aspect-ratio: 3 / 4;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  font-family: var(--mono);
+  font-size: var(--fs-xs);
+  color: var(--muted);
+}
+
+@media (max-width: 600px) {
+  .bio-layout {
+    flex-direction: column;
+    gap: var(--gap);
+  }
+
+  .bio-aside {
+    width: 100%;
+  }
+
+  .bio-photo {
+    aspect-ratio: 16 / 9;
+  }
 }
 
 /* ── deco images (optional scattered photos, tema.ru style) ──
@@ -730,17 +893,24 @@ pre.code code {
   clear: both;
 }
 
-/* ── footer ── */
+/* ── footer ──
+   Fixed-height bar pinned to the bottom (body is a flex column). The inner row
+   shares the same width + padding as .page-content so its ends line up with
+   the content above. Greyer fill via --surface. */
 .site-footer {
+  flex-shrink: 0;
+  height: 56px;
+  display: flex;
+  align-items: center;
   border-top: 1px solid var(--border);
-  margin-top: 40px;
-  padding: var(--gap) 0;
+  background: var(--surface);
 }
 
 .site-footer-inner {
   display: flex;
   justify-content: space-between;
   align-items: center;
+  width: 100%;
   max-width: var(--wide);
   margin: 0 auto;
   padding: 0 40px;
