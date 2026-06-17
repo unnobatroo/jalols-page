@@ -5,37 +5,43 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>jalols.page</title>
-  <link rel="icon" type="image/svg+xml" href="/assets/img/favicon.svg" />
+  <link rel="icon" type="image/svg+xml" href="/assets/img/favicon.svg?v=2" />
   <link rel="stylesheet" href="/assets/css/style.css" />
   <link rel="alternate" type="application/rss+xml" title="Jaloliddin Ismailov — RSS" href="/feed.xml" />
 </head>
 
 <body data-page="work">
   <script src="/assets/js/nav.js"></script>
+  <script src="/assets/js/search.js"></script>
   <main id="main-content">
 
     <div class="page-hero-wrap">
       <div class="header-container">
         <!-- <h1 class="header-title">jaloliddin "jalol" ismailov</h1> -->
-         <h1 class="header-title">SITE IN WORK!</h1>
+        <h1 class="header-title">jaloliddin "jalol" ismailov</h1>
         <div class="header-icons">
-          <a href="https://github.com/unnobatroo" aria-label="GitHub"><img
-              src="/assets/img/icons/github.svg" alt="" /></a>
-          <a href="https://linkedin.com/in/unnobatroo" aria-label="LinkedIn"><img
-              src="/assets/img/icons/linkedin.svg" alt="" /></a>
-          <a href="mailto:unnobatroo@icloud.com" aria-label="Email"><img src="/assets/img/icons/email.svg" alt="" /></a>
+          <a href="https://github.com/unnobatroo" aria-label="GitHub"><img src="/assets/img/icons/github.svg"
+              alt="" /></a>
+          <a href="https://linkedin.com/in/unnobatroo" aria-label="LinkedIn"><img src="/assets/img/icons/linkedin.svg"
+              alt="" /></a>
+          <a href="https://unsplash.com/@unnobatroo" aria-label="Unsplash"><img src="/assets/img/icons/unsplash.svg"
+              alt="" /></a>
+          <a href="mailto:unnobatroo@icloud.com" aria-label="Email"><img src="/assets/img/icons/email.svg" alt=""/></a>
         </div>
-        <p class="header-blurb">building tech that thinks<br>at the edge of the climate crisis</p>
+        <p class="header-blurb">using comp sci to connect the dots,<br>from cultural heritage to climate policy
+        </p>
       </div>
     </div>
 
     <div class="page-content deco-clearfix">
       <!-- deco: drop your own pic here, floats left next to the search bar -->
       <!-- <img class="deco deco--right" src="/assets/img/deco/your-pic.jpg" alt="" width="160"> -->
-      <input type="search" id="search" class="search-bar" placeholder="search posts…" aria-label="Search posts" />
+      <div class="search-row">
+        <input type="search" id="search" class="search-bar" placeholder="search posts…" aria-label="Search posts" />
+        <div class="sort-row" id="sort-row"></div>
+      </div>
       <div class="filter-bar">
         <div class="filter-row" id="filter-row"></div>
-        <div class="sort-row" id="sort-row"></div>
       </div>
       <div class="card-grid" id="card-grid"></div>
       <!-- deco: another pic below the grid -->
@@ -153,12 +159,14 @@
       const fmtDate = iso =>
         new Date(iso + 'T00:00:00').toLocaleDateString('en-GB', { day: 'numeric', month: 'long', year: 'numeric' });
 
-      // Apply the active tag + search filter, sort by the chosen key, redraw grid.
+      // Apply the active tag, then either rank by search relevance (when there's
+      // a query) or sort by date for plain browsing. searchPosts (search.js) is
+      // typo-tolerant and weights title > tags > excerpt.
       function render() {
-        const list = POSTS
-          .filter(p => activeTag === 'all' || p.tags.includes(activeTag))
-          .filter(p => !query || `${p.title} ${p.excerpt} ${p.tags.join(' ')}`.toLowerCase().includes(query))
-          .sort((a, b) => sortAsc
+        let list = POSTS.filter(p => activeTag === 'all' || p.tags.includes(activeTag));
+        list = query
+          ? window.searchPosts(list, query)
+          : list.sort((a, b) => sortAsc
             ? new Date(a.date) - new Date(b.date)
             : new Date(b.date) - new Date(a.date));
 

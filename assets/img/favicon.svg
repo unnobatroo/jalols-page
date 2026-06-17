@@ -1,6 +1,16 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" role="img" aria-label="jalols.page">
-  <rect width="64" height="64" rx="12" fill="#2e7d32"/>
-  <text x="50%" y="50%" text-anchor="middle" dominant-baseline="central" dy="0.06em"
-        font-family="Georgia, 'PT Serif', serif" font-style="italic" font-weight="700"
-        font-size="40" fill="#fff">j</text>
+<svg width="32" height="32" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
+<g clip-path="url(#clip0_3_20)">
+<g clip-path="url(#clip1_3_20)">
+<rect width="32.0625" height="32.0625" rx="3.75" fill="#F1F1F1"/>
+<path d="M10.7455 21.7197C9.58193 21.7197 8.65945 21.4 7.97807 20.7606C7.30717 20.1211 6.97172 19.2563 6.97172 18.1661H8.93724C8.93724 18.7322 9.09448 19.1829 9.40897 19.5184C9.73393 19.8433 10.1794 20.0058 10.7455 20.0058C11.3011 20.0058 11.7414 19.8433 12.0663 19.5184C12.3913 19.1934 12.5538 18.7479 12.5538 18.1818V10.0839H14.5193V18.1818C14.5193 19.272 14.1786 20.1368 13.4972 20.7763C12.8263 21.4053 11.9091 21.7197 10.7455 21.7197ZM17.0229 21.5625V19.7857H19.3343V11.8607H17.0229V10.0839H23.627V11.8607H21.3156V19.7857H23.627V21.5625H17.0229Z" fill="black"/>
+</g>
+</g>
+<defs>
+<clipPath id="clip0_3_20">
+<rect width="32" height="32" fill="white"/>
+</clipPath>
+<clipPath id="clip1_3_20">
+<rect width="32" height="32" fill="white"/>
+</clipPath>
+</defs>
 </svg>

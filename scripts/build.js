@@ -76,16 +76,20 @@ function writePostPage(p) {
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <link rel="icon" type="image/svg+xml" href="/assets/img/favicon.svg" />
+  <link rel="icon" type="image/svg+xml" href="/assets/img/favicon.svg?v=2" />
   <title>${p.title} — Jaloliddin Ismailov</title>
   <link rel="stylesheet" href="/assets/css/style.css" />
   <link rel="alternate" type="application/rss+xml" title="Jaloliddin Ismailov — RSS" href="/feed.xml" />
 </head>
-<body data-page="${p.type === 'project' ? 'work' : 'blog'}">
-  <script>window.POST_SLUG = ${JSON.stringify(p.slug)};</script>
+<body data-page="work">
   <script src="/assets/js/nav.js"></script>
   <main id="main-content">
     <div class="page-content page-content--narrow deco-clearfix">
+      <!-- search posts (results pop up below); sits above the post header -->
+      <div class="post-search">
+        <input type="search" id="post-search" class="search-bar" placeholder="search posts…" aria-label="Search posts" autocomplete="off" />
+        <div class="search-results hidden" id="search-results"></div>
+      </div>
       <!-- deco: drop your own pic here, floats right next to the post header -->
       <!-- <img class="deco deco--right" src="/assets/img/deco/your-pic.jpg" alt="" width="180"> -->
       <div id="post-mount"></div>
@@ -101,6 +105,7 @@ function writePostPage(p) {
   </footer>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/marked/9.1.6/marked.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+  <script src="/assets/js/search.js"></script>
   <script src="/assets/js/post.js"></script>
 </body>
 </html>
