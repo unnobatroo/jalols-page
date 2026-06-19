@@ -1,0 +1,39 @@
+/* ──────────────────────────────────────────────────────────────────────────
+   nav.css — top menu (built by nav.js).
+
+   Nav uses --fs-md, one step above the --fs-base body in the type scale, so it
+   reads as a primary site element (the whole scale grows on desktop, but that
+   one-step relationship holds). Every link carries identical padding so the
+   active-page highlight only swaps in a background — the row never reflows. */
+.menu-container {
+  display: flex;
+  justify-content: center;
+  gap: calc(var(--gap) * 1.4);
+  padding: 2em 0;
+}
+
+/* Every link carries the same padding box, so the active highlight only adds a
+   background — it never changes size and the row can't shift / wiggle. */
+.menu-link {
+  font-size: var(--fs-base);
+  padding: 2px 8px;
+}
+
+/* The current page's nav link: dark text on a pale highlight */
+.menu-link--active,
+.menu-link--active:hover {
+  color: var(--text);
+  background: var(--link-current);
+}
+
+@media (max-width: 600px) {
+  .menu-container {
+    flex-wrap: wrap;
+    gap: 8px 14px;
+    padding: 1.5em 0;
+  }
+
+  .menu-link {
+    padding: 6px 10px;
+  }
+}

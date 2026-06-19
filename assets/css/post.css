@@ -1,0 +1,135 @@
+/* ──────────────────────────────────────────────────────────────────────────
+   post.css — article header and the rendered markdown body.
+   post.js renders markdown into .post-body, so these rules style the
+   resulting headings, paragraphs, lists, and quotes. Tag-chip and post-meta
+   fonts come from the shared groups in base.css. */
+
+.post-header {
+  margin-bottom: 28px;
+}
+
+.post-header h1 {
+  font-size: var(--fs-xl);
+  font-weight: 700;
+  line-height: 1.25;
+  margin-bottom: 14px;
+}
+
+/* .post-meta font lives in base.css (.post-meta group). */
+
+/* Tag chips — used in the post header (.tag) and on the home cards
+   (.thumb-tag). Font from base.css; layout + hover here. The "+ .tag" rule
+   adds 6px between chips so neighbours don't merge into one block. */
+.tag,
+.thumb-tag {
+  display: inline-block;
+  background: var(--surface);
+  padding: 1px 4px;
+  cursor: pointer;
+  transition: color .15s, background .15s;
+}
+
+.tag+.tag {
+  margin-left: 6px;
+}
+
+.tag:hover,
+.thumb-tag:hover {
+  background: var(--border);
+  color: var(--link-hover);
+}
+
+/* ── article body ── */
+/* .post-body size + line-height come from the reading-text group in base.css */
+
+.post-body h2 {
+  font-size: var(--fs-lg);
+  font-weight: 700;
+  margin: 1.4em 0 .6em;
+  line-height: 1.25;
+}
+
+.post-body h3 {
+  font-size: var(--fs-md);
+  font-weight: 700;
+  margin: 1.1em 0 .6em;
+  line-height: 1.25;
+}
+
+.post-body p {
+  margin-bottom: 0.50em;
+}
+
+.post-body p:last-child {
+  margin-bottom: 0;
+}
+
+.post-body ul,
+.post-body ol {
+  padding-left: 1.5rem;
+  margin-bottom: .9em;
+}
+
+.post-body li {
+  margin-bottom: .1em;
+}
+
+.post-body strong {
+  font-weight: 700;
+}
+
+.post-body em {
+  font-style: italic;
+}
+
+.post-body hr {
+  border: none;
+  border-top: 1px solid var(--border);
+  margin: 2em 0;
+}
+
+.post-body blockquote {
+  border-left: 3px solid var(--muted);
+  padding: 4px 0 4px 16px;
+  margin: 1.2em 0;
+  color: #444;
+  font-style: italic;
+}
+
+/* ── embedded media (images + self-hosted video) ──
+   Both get the same framed look as the rest of the site: a thin hairline, square
+   corners, and breathing room above/below. Drop a file in assets/ and reference
+   it from the markdown — images via ![alt](src), video via a raw <video> tag
+   (marked passes the HTML through). Native browser controls keep it dependency-
+   free; the black backdrop makes the player read as deliberate before it loads.
+   max-width (not width) on images avoids upscaling a small one. */
+.post-body img {
+  max-width: 100%;
+  border: 1px solid var(--border);
+  margin: 1.4em 0;
+}
+
+.post-body video {
+  display: block;
+  width: 100%;
+  background: #000;
+  border: 1px solid var(--border);
+  margin: 1.4em 0;
+}
+
+/* optional <figure><img/video><figcaption>…</figcaption></figure> caption */
+.post-body figure {
+  margin: 1.4em 0;
+}
+
+.post-body figure img,
+.post-body figure video {
+  margin: 0;
+}
+
+.post-body figcaption {
+  font-family: var(--mono);
+  font-size: var(--fs-xs);
+  color: var(--muted);
+  margin-top: 6px;
+}

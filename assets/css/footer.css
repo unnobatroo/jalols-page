@@ -1,0 +1,30 @@
+/* ──────────────────────────────────────────────────────────────────────────
+   footer.css — fixed-height bar pinned to the bottom (body is a flex column).
+   The inner row shares the same width + padding as .page-content so its ends
+   line up with the content above. */
+.site-footer {
+  flex-shrink: 0;
+  height: 56px;
+  display: flex;
+  align-items: center;
+  border-top: 1px solid var(--border);
+  background: var(--surface);
+}
+
+.site-footer-inner {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+  max-width: var(--wide);
+  margin: 0 auto;
+  padding: 0 40px;
+  font-size: var(--fs-xs);
+  color: var(--muted);
+}
+
+@media (max-width: 600px) {
+  .site-footer-inner {
+    padding: 0 var(--gap);
+  }
+}

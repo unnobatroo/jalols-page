@@ -1,0 +1,82 @@
+/* ──────────────────────────────────────────────────────────────────────────
+   base.css — links, focus, and the shared typography patterns.
+
+   The "shared mono text" rules at the bottom are the single home for the
+   small monospace labels that repeat all over the site (meta lines, tags,
+   code headers, empty states…). Components elsewhere only add their own
+   layout (background, padding, hover) — the font/size/colour live here so
+   there's one place to tune them. */
+
+/* ── links ──
+   The underline is a bottom border (not text-decoration) so it can be a
+   softer, paler colour than the text. Three states: default / visited /
+   hover. To turn underlines off site-wide, delete the border-bottom lines. */
+a {
+  color: var(--accent);
+  text-decoration: none;
+  border-bottom: 1px solid var(--ul);
+  transition: color .15s, border-color .15s;
+}
+
+a:visited {
+  color: var(--link-visited);
+  border-bottom-color: var(--ul-visited);
+}
+
+a:hover {
+  color: var(--link-hover);
+  border-bottom-color: var(--ul-hover);
+}
+
+/* These links keep the colours but drop the underline (they wrap icons,
+   chips, card images, or sit in the nav). Add a class here to exempt more. */
+.menu-link,
+.header-icons a,
+.thumb-titleLink,
+.tag {
+  border-bottom: none;
+}
+
+/* Keyboard focus ring (accessibility — shown when tabbing, not on click) */
+:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+}
+
+/* ── shared mono text patterns (the "generalised" font styles) ──
+   Group 1: 12px mono meta — dates, filter buttons, empty/no-result states. */
+.post-meta,
+.thumb-time,
+.filter-btn,
+.search-empty,
+.no-results {
+  font-family: var(--mono);
+  font-size: var(--fs-xs);
+  color: var(--muted);
+}
+
+/* Group 2: 11px mono micro-labels — tag chips, code header, search-hit meta. */
+.tag,
+.thumb-tag,
+.code-block-header,
+.search-hit-meta {
+  font-family: var(--mono);
+  font-size: var(--fs-2xs);
+  color: var(--muted);
+}
+
+/* ── reading body text ──
+   One size and one line-height for every block of prose on the site — posts,
+   about page, and card/hero blurbs all read identically. */
+.post-body,
+.bio-lead,
+.bio-list li,
+.header-blurb,
+.thumb-blurb {
+  font-size: var(--fs-base);
+  line-height: 1.25;
+}
+
+.thumb-blurb {
+  font-size: var(--fs-sm);
+}
