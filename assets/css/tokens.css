@@ -51,10 +51,10 @@
   --mono: "JetBrains Mono", Menlo, Consolas, monospace;
 
   /* Font-size scale — smallest to largest (see hierarchy note above) */
-  --fs-2xs: 11px;
-  --fs-xs: 12px;
-  --fs-sm: 14px;
-  --fs-base: 16px;
+  --fs-2xs: 10px;
+  --fs-xs: 11px;
+  --fs-sm: 13px;
+  --fs-base: 15px;
   --fs-md: 18px;
   --fs-lg: 22px;
   --fs-xl: 28px;
