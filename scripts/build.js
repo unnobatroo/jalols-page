@@ -76,9 +76,10 @@ function writePostPage(p) {
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <link rel="icon" type="image/svg+xml" href="/assets/img/favicon.svg?v=2" />
+  <link rel="icon" type="image/svg+xml" href="/assets/img/favicon.svg?v=18" />
   <title>${p.title} — Jaloliddin Ismailov</title>
-  <link rel="stylesheet" href="/assets/css/style.css" />
+  <link rel="stylesheet" href="/assets/css/style.css?v=18" />
+  <link rel="stylesheet" href="/assets/css/comments.css?v=18" />
   <link rel="alternate" type="application/rss+xml" title="Jaloliddin Ismailov — RSS" href="/feed.xml" />
 </head>
 <body data-page="work">
@@ -95,6 +96,8 @@ function writePostPage(p) {
       <div id="post-mount"></div>
       <!-- deco: pic at the end of the post -->
       <!-- <img class="deco deco--center" src="/assets/img/deco/your-pic-end.jpg" alt="" width="300"> -->
+      <!-- comments (rendered by comments.js, backed by Supabase) -->
+      <section id="comments"></section>
     </div>
   </main>
   <footer class="site-footer">
@@ -105,8 +108,12 @@ function writePostPage(p) {
   </footer>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/marked/9.1.6/marked.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
-  <script src="/assets/js/search.js"></script>
+  <script src="/assets/js/search.js?v=18"></script>
   <script src="/assets/js/post.js"></script>
+  <!-- comments: Supabase client + DOMPurify (marked is already loaded above) -->
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/dompurify/3.0.9/purify.min.js"></script>
+  <script src="/assets/js/comments.js?v=18"></script>
 </body>
 </html>
 `,

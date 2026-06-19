@@ -15,8 +15,8 @@
   const slug = segs[segs.indexOf('posts') + 1];
   if (!slug) { mount.textContent = 'No post specified.'; return; }
 
-  // Inline SVG icons for the code-block buttons (CSP blocks icon fonts/inline
-  // styles, so these are injected as markup by this same-origin script).
+  // Inline SVG icons for the code-block buttons — no icon font / external
+  // request, just markup this same-origin script injects.
   // 14×14, stroke = currentColor so they inherit the button's text colour.
   const svg = body =>
     `<svg viewBox="0 0 16 16" width="14" height="14" fill="none" stroke="currentColor" ` +
@@ -98,6 +98,7 @@
       // requiring focus to move to the button.
       header.innerHTML = `<span class="lang">${lang}</span>` +
         `<span class="code-actions">` +
+          `<span class="copy-feedback" aria-hidden="true"></span>` +
           `<button class="copy-btn" type="button" aria-label="Copy code" title="Copy">${IC.copy}</button>` +
           `<span class="sr-only" aria-live="polite" aria-atomic="true"></span>` +
           `<button class="toggle-btn" type="button" aria-label="Collapse code" title="Collapse">${IC.up}</button>` +
@@ -121,6 +122,7 @@
       // Icon briefly flips to a checkmark on success.
       const copyBtn = header.querySelector('.copy-btn');
       const copyStatus = header.querySelector('.code-actions .sr-only');
+      const copyFeedback = header.querySelector('.copy-feedback');  // subtle visible "copied"
       copyBtn.addEventListener('click', async () => {
         const src = (code?.textContent || pre.textContent).replace(/\n$/, '');
         try {
@@ -128,15 +130,21 @@
           copyBtn.innerHTML = IC.check;
           copyBtn.classList.add('copied');
           copyBtn.title = 'Copied';
+          copyFeedback.textContent = 'copied';
+          copyFeedback.classList.add('show');
           copyStatus.textContent = 'Code copied.';
         } catch {
-          copyBtn.title = 'Press ⌘/Ctrl+C to copy';
-          copyStatus.textContent = 'Copy failed. Press ⌘/Ctrl+C to copy.';
+          copyBtn.title = 'copied!';
+          copyFeedback.textContent = 'copied!';
+          copyFeedback.classList.add('show');
+          copyStatus.textContent = 'copied!.';
         }
         setTimeout(() => {
           copyBtn.innerHTML = IC.copy;
           copyBtn.classList.remove('copied');
           copyBtn.title = 'Copy';
+          copyFeedback.classList.remove('show');
+          copyFeedback.textContent = '';
           copyStatus.textContent = '';
         }, 1500);
       });

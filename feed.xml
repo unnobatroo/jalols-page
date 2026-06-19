@@ -8,40 +8,12 @@
     <atom:link href="https://jalols.page/feed.xml" rel="self" type="application/rss+xml"/>
 
   <item>
-    <title><![CDATA[Fitting Neural Nets Inside a Coin-Cell Power Budget]]></title>
-    <link>https://jalols.page/posts/edge-inference-power-budget/</link>
-    <guid isPermaLink="true">https://jalols.page/posts/edge-inference-power-budget/</guid>
-    <pubDate>Tue, 11 Mar 2025 00:00:00 +0000</pubDate>
-    <description><![CDATA[How I used quantisation-aware training and MCUNet to push inference to 32 μW — and what I got wrong the first three times.]]></description>
-    <category>edge-ai</category>
-    <category>embedded</category>
-    <category>power</category>
-  </item>
-  <item>
-    <title><![CDATA[What the COP29 Technical Annex Actually Says About Grid Storage]]></title>
-    <link>https://jalols.page/posts/cop29-technical-annex/</link>
-    <guid isPermaLink="true">https://jalols.page/posts/cop29-technical-annex/</guid>
-    <pubDate>Mon, 02 Dec 2024 00:00:00 +0000</pubDate>
-    <description><![CDATA[A close reading of Annex III — the parts that got buried under the headlines, and why they matter for deployed systems.]]></description>
+    <title><![CDATA[My impressions from the SB64]]></title>
+    <link>https://jalols.page/posts/sb64-impressions/</link>
+    <guid isPermaLink="true">https://jalols.page/posts/sb64-impressions/</guid>
+    <pubDate>Tue, 19 May 2026 00:00:00 +0000</pubDate>
+    <description><![CDATA[A short afterthought on what I saw and learnt at one of the year's most important climate gatherings — the mid-year UN talks in Bonn.]]></description>
     <category>climate policy</category>
-  </item>
-  <item>
-    <title><![CDATA[TinyML Wildfire Sensor]]></title>
-    <link>https://jalols.page/posts/tinyml-wildfire/</link>
-    <guid isPermaLink="true">https://jalols.page/posts/tinyml-wildfire/</guid>
-    <pubDate>Sun, 03 Nov 2024 00:00:00 +0000</pubDate>
-    <description><![CDATA[On-device smoke & thermal anomaly detection at 40 μW on a Cortex-M4. Deployed in Ventura County, CA.]]></description>
-    <category>edge-ai</category>
-    <category>climate policy</category>
-    <category>embedded</category>
-  </item>
-  <item>
-    <title><![CDATA[Building a Minimal RISC-V Softcore for Inference]]></title>
-    <link>https://jalols.page/posts/risc-v-softcore-fpga/</link>
-    <guid isPermaLink="true">https://jalols.page/posts/risc-v-softcore-fpga/</guid>
-    <pubDate>Sun, 28 Jul 2024 00:00:00 +0000</pubDate>
-    <description><![CDATA[Synthesising a hand-rolled RV32IM on a $4 iCE40 and getting a CNN to run on it. Spoiler: the toolchain is the hard part.]]></description>
-    <category>embedded</category>
   </item>
   </channel>
 </rss>

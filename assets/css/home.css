@@ -1,0 +1,174 @@
+/* ──────────────────────────────────────────────────────────────────────────
+   home.css — the index page: hero, tag/sort filter bar, and the card grid.
+   Small monospace labels here (filter buttons, thumb dates) inherit their
+   font from the shared groups in base.css. */
+
+/* ── hero (big name + social icons) ── */
+.page-hero-wrap {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding-bottom: calc(var(--gap) * 1.2);
+}
+
+.header-container {
+  margin-top: var(--gap);
+  padding: 0 var(--gap);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  gap: var(--gap);
+}
+
+.header-title {
+  font-size: var(--fs-2xl);
+  font-weight: 600;
+  font-style: italic;
+}
+
+.header-icons {
+  display: flex;
+  align-items: center;
+  gap: calc(var(--gap) * 1.2);
+}
+
+.header-icons a {
+  opacity: .7;
+  transition: opacity .15s;
+}
+
+.header-icons a:hover {
+  opacity: 1;
+}
+
+.header-icons img {
+  width: 32px;
+  height: 32px;
+}
+
+/* .header-blurb intentionally has no rule — it uses the body text style. */
+
+/* ── filter + sort bar ── */
+.filter-bar {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: var(--gap);
+  margin-bottom: var(--gap);
+}
+
+/* tags grouped on the left, wrapping within their own area.
+   gap is "row-gap column-gap" — 6px between wrapped lines, 12px between tags */
+.filter-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px 12px;
+  flex: 1;
+  min-width: 0;
+}
+
+/* sort stays pinned top-right, never drops below the tags */
+.sort-row {
+  display: flex;
+  align-items: center;
+  flex-shrink: 0;
+}
+
+/* font comes from base.css (.filter-btn group); only behaviour here */
+.filter-btn {
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 1px 0;
+  transition: color .15s;
+}
+
+.filter-btn:hover {
+  color: var(--text);
+}
+
+.filter-btn--active {
+  color: var(--text);
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+
+.tag-count {
+  margin-left: 4px;
+  opacity: .55;
+}
+
+.sort-arrow {
+  font-style: normal;
+}
+
+/* ── card grid (post thumbnails) ──
+   3 columns on desktop. gap is "row-gap column-gap": 24px between rows,
+   4px between columns. The @media blocks drop to 2 then 1 column. */
+.card-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: calc(var(--gap) * 1.2) 16px;
+}
+
+.thumb-container {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  padding: 4px;
+}
+
+.thumb-image {
+  width: 100%;
+  aspect-ratio: 16/9;
+  object-fit: cover;
+  border: 1px solid var(--border);
+  transition: opacity .15s;
+}
+
+.thumb-titleLink {
+  display: block;
+}
+
+/* Slight fade on the thumbnail when you hover its title link */
+.thumb-titleLink:hover .thumb-image {
+  opacity: .88;
+}
+
+.thumb-title {
+  font-size: var(--fs-md);
+  font-weight: 700;
+  line-height: 1.35;
+}
+
+/* .thumb-time font comes from base.css; .thumb-blurb uses the body style. */
+
+.thumb-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
+  /* a bit more breathing room between the description above and the tags */
+  margin-top: 4px;
+}
+
+/* Shown when a search/filter matches nothing (font from base.css) */
+.no-results {
+  padding: 2rem 0;
+}
+
+@media (max-width: 960px) {
+  .card-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (max-width: 600px) {
+  .card-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .header-title {
+    font-size: var(--fs-xl);
+  }
+}

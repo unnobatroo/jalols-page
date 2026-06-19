@@ -1,0 +1,56 @@
+/* ──────────────────────────────────────────────────────────────────────────
+   layout.css — the centred content column, optional float-in photos, and the
+   global hide utility. */
+
+/* .page-content is the centred column. Add --narrow for the slimmer reading
+   width used on post and bio pages. */
+.page-content {
+  max-width: var(--wide);
+  margin: 32px auto 80px;
+  padding: 0 40px;
+}
+
+.page-content--narrow {
+  max-width: var(--prose);
+}
+
+/* ── deco images (optional scattered photos) ──
+   Unused by default — drop an <img class="deco deco--left|right|center"> into
+   a page to float a photo there. The clearfix stops floats from spilling out
+   of their container. */
+.deco {
+  display: block;
+  max-width: 100%;
+}
+
+.deco--left {
+  float: left;
+  margin: 0 var(--gap) var(--gap) 0;
+}
+
+.deco--right {
+  float: right;
+  margin: 0 0 var(--gap) var(--gap);
+}
+
+.deco--center {
+  margin: var(--gap) auto;
+}
+
+.deco-clearfix::after {
+  content: '';
+  display: table;
+  clear: both;
+}
+
+/* Utility: hide an element completely (toggled by JS) */
+.hidden {
+  display: none !important;
+}
+
+@media (max-width: 600px) {
+  .page-content {
+    padding: 0 var(--gap);
+    margin-top: 24px;
+  }
+}

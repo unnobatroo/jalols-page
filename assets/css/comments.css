@@ -1,0 +1,386 @@
+/* ──────────────────────────────────────────────────────────────────────────
+   comments.css — Reddit-style threaded comments, loaded only on post pages.
+
+   Built almost entirely from the site's own tokens: greyscale type and
+   hairlines, with the blue --accent reserved for links and the AUTHOR badge.
+   Each comment has a fixed left "rail" (where avatars would sit on Reddit) that
+   holds a round collapse control; comments with replies drop a straight
+   thread-line down that rail. Everything is scoped under #comments so none of
+   it bleeds into the article above. The DOM is built by comments.js. */
+
+/* The section sits well below the article, fenced off by a top hairline. */
+#comments {
+  --c-line: #e3e3e3;                 /* colour of the reply thread-line */
+  margin-top: calc(var(--gap) * 2.5);
+  padding-top: calc(var(--gap) * 1.2);
+  border-top: 1px solid var(--border);
+  color: var(--text);
+  font-family: var(--serif);
+}
+
+/* "Comments (N)" — a mono heading; the count is muted and lighter weight. */
+.comments-title {
+  font-family: var(--mono);
+  font-size: var(--fs-lg);
+  font-weight: 700;
+  line-height: 1.2;
+  margin: 0 0 var(--gap);
+  color: var(--text);
+}
+
+.comments-count {
+  color: var(--muted);
+  font-weight: normal;
+}
+
+/* ── register gate + composer ──
+   No card around these — the textarea's / inputs' own borders are the frame. */
+.c-box {
+  margin-bottom: calc(var(--gap) * 1.5);
+}
+
+.c-box p {
+  margin: 0 0 10px;
+}
+
+/* "No comments yet" placeholder. */
+.c-note {
+  font-size: var(--fs-xs);
+  color: var(--muted);
+  margin: 0;
+}
+
+/* name + email sit side by side, wrapping to stacked on narrow widths. */
+.c-row {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+  margin-bottom: 10px;
+}
+
+.c-row>* {
+  flex: 1;
+  min-width: 180px;     /* below this they wrap instead of squashing */
+}
+
+.c-input,
+.c-textarea {
+  width: 100%;
+  font-family: var(--mono);
+  font-size: var(--fs-sm);
+  color: var(--text);
+  background: #fff;
+  border: 1px solid var(--border);
+  padding: 7px 9px;
+  box-sizing: border-box;
+}
+
+.c-input:focus,
+.c-textarea:focus {
+  outline: none;
+  border-color: var(--text);   /* focus = darken the border, no glow */
+}
+
+.c-textarea {
+  resize: vertical;
+  min-height: 76px;
+  line-height: 1.5;
+  margin-bottom: 8px;
+}
+
+/* Post / Reply / Send are real buttons — bordered + faint surface fill, like
+   the site's search bar and code-block header. */
+.c-submit {
+  font-family: var(--mono);
+  font-size: var(--fs-xs);
+  cursor: pointer;
+  padding: 7px 14px;
+  border: 1px solid var(--border);
+  background: var(--surface);
+  color: var(--muted);
+  transition: border-color .15s, background .15s, color .15s;
+}
+
+/* hover = the same transform the tag chips use: dark-grey fill, red label. */
+.c-submit:hover:not(:disabled) {
+  border-color: var(--border);
+  background: var(--border);
+  color: var(--link-hover);
+}
+
+.c-submit:disabled {
+  color: var(--muted);
+  cursor: default;
+}
+
+/* Secondary, link-style actions: reply / delete / change name / sign out. */
+.c-btn--link {
+  background: none;
+  border: none;
+  padding: 0;
+  font-family: var(--mono);
+  font-size: var(--fs-2xs);
+  color: var(--muted);
+  cursor: pointer;
+}
+
+.c-btn--link:hover {
+  color: var(--text);
+  text-decoration: underline;
+  text-underline-offset: 2px;
+}
+
+/* Status line under the Send button (validation errors / "check your inbox").
+   The big top margin keeps it clearly separated from the button. */
+.c-msg {
+  font-size: var(--fs-xs);
+  margin: calc(var(--gap) * 1.6) 0 0;
+}
+
+.c-msg--ok {
+  color: var(--text);
+}
+
+.c-msg--err {
+  color: var(--text);
+  font-style: italic;
+}
+
+/* "Commenting as NAME" on the left, the change/sign-out links pinned right. */
+.c-who {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  gap: 10px;
+  font-family: var(--serif);
+  font-size: var(--fs-sm);
+  color: var(--muted);
+  margin-bottom: var(--gap);
+}
+
+.c-who strong {
+  color: var(--text);
+  font-weight: 600;
+}
+
+.c-who-actions {
+  flex-shrink: 0;          /* never wrap the actions under the name */
+  white-space: nowrap;
+  font-family: var(--mono);
+  font-size: var(--fs-xs);
+}
+
+/* these links stay underlined at rest (the base rule only underlines on hover) */
+.c-who .c-btn--link {
+  text-decoration: underline;
+  text-underline-offset: 2px;
+}
+
+/* ── the thread ──
+   Geometry: every .c-item reserves a 32px left gutter (`.c-main` padding). The
+   collapse circle is absolutely positioned into that gutter; a comment WITH
+   replies (.has-kids) also draws a vertical line down it. Replies live inside
+   .c-main, and each is itself a .c-item with its own 32px gutter — that's what
+   produces the step-in indentation, no per-level rules needed. */
+.c-thread {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.c-item {
+  position: relative;       /* anchor for the absolutely-placed circle + line */
+  margin-bottom: 26px;
+}
+
+.c-item:last-child {
+  margin-bottom: 0;
+}
+
+.c-list>.c-thread>.c-item {
+  margin-bottom: 34px;      /* more air between top-level threads than within one */
+}
+
+.c-item>.c-main {
+  padding-left: 32px;       /* the left rail */
+}
+
+/* Collapse circle, parked at the top of the rail (centre x ≈ 12px). */
+.c-collapse {
+  position: absolute;
+  left: 3px;
+  top: 1px;
+  z-index: 2;
+  width: 18px;
+  height: 18px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 1.5px solid var(--border);
+  border-radius: 50%;
+  background: #fff;
+  color: var(--muted);
+  font-family: var(--mono);
+  font-size: 13px;
+  line-height: 1;
+  cursor: pointer;
+  transition: color .12s, border-color .12s;
+}
+
+.c-collapse:hover {
+  color: var(--text);
+  border-color: var(--text);
+}
+
+/* The thread-line: a straight vertical rule under the circle (left 11.25px ≈
+   the circle's centre) running down past this comment's replies. */
+.c-item.has-kids::before {
+  content: '';
+  position: absolute;
+  left: 11.25px;
+  top: 22px;          /* start just below the 18px circle */
+  bottom: 2px;
+  width: 1.5px;
+  background: var(--c-line);
+}
+
+.c-item.has-kids:hover::before {
+  background: var(--muted);   /* darken the line when hovering its comment */
+}
+
+.c-main>.c-thread {
+  margin-top: 18px;           /* gap between a comment and its first reply */
+}
+
+/* Byline: name · time, in mono. */
+.c-head {
+  display: flex;
+  align-items: baseline;
+  gap: 6px;
+  font-family: var(--mono);
+  font-size: var(--fs-xs);
+  color: var(--muted);
+  margin-bottom: 4px;
+}
+
+.c-name {
+  font-weight: 600;
+  color: var(--text);
+}
+
+/* AUTHOR badge — accent-filled. comments.js only renders it when the DB's
+   is_author flag is set, so it's a real (unspoofable) owner marker. */
+.c-badge {
+  font-family: var(--mono);
+  font-size: var(--fs-2xs);
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: .04em;
+  color: #fff;
+  background: var(--accent);
+  border-radius: 3px;
+  padding: 1px 6px;
+}
+
+.c-time::before {
+  content: "· ";       /* the dot separator between name and time */
+}
+
+/* ── comment body ── same size + leading as the article body. */
+.c-body {
+  font-size: var(--fs-base);
+  line-height: 1.4;
+}
+
+.c-body> :first-child {
+  margin-top: 0;
+}
+
+.c-body> :last-child {
+  margin-bottom: 0;
+}
+
+.c-body p {
+  margin: 0 0 10px;
+}
+
+/* The global reset (tokens.css) zeroes list padding, so restore the indent
+   here — otherwise the bullets hang out into the rail. */
+.c-body ul,
+.c-body ol {
+  margin: 0 0 10px;
+  padding-left: 1.4rem;
+}
+
+.c-body ul {
+  list-style-type: disc;       /* filled bullets, not the nested-default hollow ones */
+}
+
+.c-body li {
+  margin-bottom: 0;            /* tight bullet list, grouped with its lead-in line */
+}
+
+.c-body li::marker {
+  color: var(--text);          /* black bullets to match the text */
+}
+
+.c-body pre {
+  background: var(--surface);
+  padding: 12px;
+  margin: 12px 0;
+  overflow-x: auto;
+  font-family: var(--mono);
+  font-size: var(--fs-xs);
+}
+
+.c-body code {
+  font-family: var(--mono);
+  font-size: .9em;
+}
+
+.c-body blockquote {
+  margin: 8px 0;
+  padding-left: 12px;
+  border-left: 2px solid var(--border);
+  color: var(--muted);
+}
+
+/* soft-deleted comment ("[removed]") — its replies still render below it. */
+.c-removed {
+  color: var(--muted);
+  font-style: italic;
+  font-size: var(--fs-sm);
+}
+
+/* reply / delete sit below the comment as underlined grey links (same look as
+   change name / sign out — the base .c-btn--link handles colour + hover). */
+.c-actions {
+  margin-top: 6px;
+  display: flex;
+  gap: 14px;
+  align-items: center;
+}
+
+.c-actions .c-btn--link {
+  text-decoration: underline;
+  text-underline-offset: 2px;
+}
+
+.c-replybox {
+  margin-top: 10px;
+}
+
+/* Collapsed: keep only the byline; hide body, actions, replies, and the line. */
+.c-item.collapsed::before {
+  display: none;
+}
+
+.c-item.collapsed>.c-main>.c-body,
+.c-item.collapsed>.c-main>.c-actions,
+.c-item.collapsed>.c-main>.c-thread {
+  display: none;
+}
+
+.hidden {
+  display: none;
+}

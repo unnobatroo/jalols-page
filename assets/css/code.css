@@ -1,0 +1,217 @@
+/* ──────────────────────────────────────────────────────────────────────────
+   code.css — inline `code`, full code blocks, and syntax-highlight colours.
+
+   post.js wraps each block as:
+   .code-block-wrap > .code-block-header + .code-block-body(.line-numbers + pre.code)
+   The header's mono font comes from the shared group in base.css. */
+
+code {
+  font-family: var(--mono);
+  font-size: var(--fs-xs);
+  background: var(--surface);
+  padding: 1px 8px;
+}
+
+.code-block-wrap {
+  margin: 12px 0;
+  border: 1px solid var(--border);
+}
+
+/* font (mono / 11px / muted) from base.css; layout here */
+.code-block-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 4px 8px;
+  background: var(--surface);
+  border-bottom: 1px solid var(--border);
+}
+
+.code-block-header .lang {
+  text-transform: uppercase;
+  font-weight: 500;
+  color: var(--accent);
+}
+
+/* Header buttons (copy + collapse) are icon-only and share one look. */
+.code-actions {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.toggle-btn,
+.copy-btn {
+  display: inline-flex;
+  align-items: center;
+  padding: 0;
+  background: none;
+  border: none;
+  color: var(--muted);
+  cursor: pointer;
+  transition: color .15s;
+}
+
+.toggle-btn:hover,
+.copy-btn:hover {
+  color: var(--text);
+}
+
+/* Brief confirmation tint when the checkmark shows after a copy */
+.copy-btn.copied {
+  color: var(--accent);
+}
+
+/* Subtle "copied" label that fades in next to the copy icon on success */
+.copy-feedback {
+  font-family: var(--mono);
+  font-size: var(--fs-2xs);
+  color: var(--muted);
+  opacity: 0;
+  transition: opacity .15s;
+}
+
+.copy-feedback.show {
+  opacity: 1;
+}
+
+.code-block-body {
+  display: flex;
+}
+
+/* When collapsed (via the collapse button) the code body is hidden */
+.code-block-body.collapsed {
+  display: none;
+}
+
+.line-numbers {
+  padding: 12px 8px;
+  background: var(--surface);
+  color: var(--border);
+  font-family: var(--mono);
+  font-size: var(--fs-xs);
+  line-height: 1.5;
+  text-align: right;
+  user-select: none;
+  border-right: 1px solid var(--border);
+  min-width: 2.4rem;
+  white-space: pre;
+}
+
+pre.code {
+  flex: 1;
+  margin: 0;
+  padding: 12px 16px;
+  overflow-x: auto;
+  font-family: var(--mono);
+  font-size: var(--fs-xs);
+  line-height: 1.5;
+  background: var(--bg);
+}
+
+pre.code code {
+  background: none;
+  border: none;
+  padding: 0;
+  font-size: inherit;
+}
+
+/* ── syntax highlighting — colours mirror VS Code "Light Modern" ──
+   Each rule is one token type; edit the hex to retheme. The control-keyword
+   split (purple) is driven by a small pass in post.js. */
+.hljs {
+  background: transparent !important;
+  color: #3b3b3b !important;
+}
+
+/* keywords, storage, primitive types, literals, this/self, preprocessor → blue */
+.hljs-keyword,
+.hljs-type,
+.hljs-literal,
+.hljs-variable.language_,
+.hljs-meta,
+.hljs-meta .hljs-keyword {
+  color: #00f !important;
+}
+
+/* control-flow keywords (if/return/import/#include…, re-tagged in post.js) → purple */
+.hljs-keyword--control {
+  color: #af00db !important;
+}
+
+/* class & type names → teal */
+.hljs-title.class_,
+.hljs-class .hljs-title {
+  color: #267f99 !important;
+}
+
+/* function names + built-ins (printf/len/range…) → gold */
+.hljs-title,
+.hljs-title.function_,
+.hljs-built_in {
+  color: #795e26 !important;
+}
+
+/* strings → dark red */
+.hljs-string,
+.hljs-template-literal,
+.hljs-meta .hljs-string {
+  color: #a31515 !important;
+}
+
+.hljs-regexp {
+  color: #811f3f !important;
+}
+
+.hljs-number {
+  color: #098658 !important;
+}
+
+.hljs-comment,
+.hljs-quote {
+  color: #008000 !important;
+}
+
+/* variables, parameters, object keys → navy */
+.hljs-variable,
+.hljs-params,
+.hljs-property,
+.hljs-attr {
+  color: #001080 !important;
+}
+
+/* CSS property names → red */
+.hljs-attribute {
+  color: #e50000 !important;
+}
+
+/* character escapes (\n, \t…) → brighter red */
+.hljs-char.escape_ {
+  color: #ee0000 !important;
+}
+
+.hljs-operator {
+  color: #000 !important;
+}
+
+.hljs-punctuation,
+.hljs-subst {
+  color: #3b3b3b !important;
+}
+
+/* HTML/XML tags & CSS selectors → maroon */
+.hljs-tag,
+.hljs-name,
+.hljs-selector-tag,
+.hljs-selector-id,
+.hljs-selector-class {
+  color: #800000 !important;
+}
+
+.hljs-deletion {
+  color: #a31515 !important;
+}
+
+.hljs-addition {
+  color: #098658 !important;
+}

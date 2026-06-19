@@ -1,0 +1,81 @@
+/* ──────────────────────────────────────────────────────────────────────────
+   bio.css — the about page. Two columns: text left, photo pinned right;
+   stacks on narrow screens (photo drops below the text). */
+.bio-layout {
+  display: flex;
+  align-items: flex-start;
+  gap: calc(var(--gap) * 2);
+}
+
+.bio-main {
+  flex: 1;
+  min-width: 0;
+}
+
+.bio-title {
+  font-size: var(--fs-xl);
+  font-weight: 700;
+  margin-bottom: 16px;
+}
+
+/* .bio-lead size + line-height come from the reading-text group in base.css */
+.bio-lead {
+  margin-bottom: 20px;
+}
+
+.bio-list {
+  list-style: none;
+}
+
+/* Each emoji is the bullet: a fixed-width marker keeps the text aligned, and
+   wrapped lines stay indented under the text (not under the emoji). */
+/* size + line-height from the reading-text group in base.css */
+.bio-list li {
+  display: flex;
+  gap: 8px;
+  margin-bottom: 6px;
+}
+
+.bio-list li:last-child {
+  margin-bottom: 0;
+}
+
+.bio-list .bi {
+  flex-shrink: 0;
+  width: 1.5em;
+  text-align: center;
+}
+
+/* the text (incl. any inline links) is one flex item beside the emoji, so an
+   <a> inside a line no longer breaks onto its own flex item */
+.bio-list li>span:not(.bi) {
+  flex: 1;
+  min-width: 0;
+}
+
+.bio-aside {
+  flex-shrink: 0;
+  width: 220px;
+}
+
+/* portrait photo — fills the box, cropped to a 3:4 frame */
+.bio-photo {
+  width: 100%;
+  aspect-ratio: 3 / 4;
+  object-fit: cover;
+  border: 1px solid var(--border);
+  background: var(--surface);
+}
+
+@media (max-width: 600px) {
+  .bio-layout {
+    flex-direction: column;
+    gap: var(--gap);
+  }
+
+  /* keep the portrait ratio on mobile, just cap the width so it isn't huge */
+  .bio-aside {
+    width: 100%;
+    max-width: 240px;
+  }
+}

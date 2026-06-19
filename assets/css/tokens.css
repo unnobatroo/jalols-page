@@ -1,0 +1,123 @@
+/* ──────────────────────────────────────────────────────────────────────────
+   tokens.css — design tokens + reset + document base.
+
+   Everything here is global scaffolding: the CSS custom properties that the
+   rest of the sheets read (colours, fonts, the type scale, spacing), a small
+   reset, and the html/body defaults. Edit a token here to restyle the whole
+   site at once.
+
+   Type scale (importance hierarchy, largest → smallest):
+     --fs-2xl 36  home hero name
+     --fs-xl  28  post / bio title
+     --fs-lg  22  section heading (h2)
+     --fs-md  18  sub-heading (h3), card title, NAV  ← nav sits just above body
+     --fs-base 16 reading body text
+     --fs-sm  14  small blurbs
+     --fs-xs  12  meta, tags, code
+     --fs-2xs 11  micro-labels (tags, code header)
+   Conventions: hex colours, px sizes, var(--x) reads a token below. */
+:root {
+  /* Links: blue → purple (visited) → red (hover).
+     The "underline" is a thin bottom border in a pale tint of the text. */
+  --accent: #008ace;
+  /* default (unvisited) link colour */
+  --link-visited: #b40eb4;
+  /* link colour after you've visited it */
+  --link-hover: #cc0000;
+  /* link colour on mouse hover */
+  --ul: #b2ccf0;
+  /* underline tint — default */
+  --ul-visited: #e0b2e0;
+  /* underline tint — visited */
+  --ul-hover: #f0b2b2;
+  /* underline tint — hover */
+  --link-current: #ebebcf;
+  /* highlight behind the current page's nav link */
+
+  /* Base palette */
+  --text: #111;
+  /* main text colour */
+  --muted: #666;
+  /* dates, tags, secondary text */
+  --bg: #fff;
+  /* page background */
+  --surface: rgba(0, 0, 0, .05);
+  /* faint grey fill (chips, code bg) */
+  --border: #bbb;
+  /* hairlines, boxes, dividers */
+
+  /* Fonts (keep in sync with the web-font @import at the top of style.css) */
+  --serif: "PT Serif", Georgia, serif;
+  --mono: "JetBrains Mono", Menlo, Consolas, monospace;
+
+  /* Font-size scale — smallest to largest (see hierarchy note above) */
+  --fs-2xs: 11px;
+  --fs-xs: 12px;
+  --fs-sm: 14px;
+  --fs-base: 16px;
+  --fs-md: 18px;
+  --fs-lg: 22px;
+  --fs-xl: 28px;
+  --fs-2xl: 36px;
+
+  --gap: 20px;
+  /* spacing unit */
+  --wide: 1200px;
+  /* page width cap */
+  --prose: 860px;
+  /* post reading width */
+}
+
+/* On desktop, scale the whole type scale up a notch — every component reads
+   its size from these tokens, so bumping them here enlarges everything
+   (body, nav, headings, comments, meta) at once. Phones keep the values above. */
+@media (min-width: 880px) {
+  :root {
+    --fs-2xs: 12px;
+    --fs-xs: 13px;
+    --fs-sm: 15px;
+    --fs-base: 18px;
+    --fs-md: 20px;
+    --fs-lg: 25px;
+    --fs-xl: 32px;
+    --fs-2xl: 40px;
+  }
+}
+
+/* ── reset (sensible defaults: no stray margins, predictable sizing) ── */
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html {
+  font-size: var(--fs-base);
+  scroll-behavior: smooth;
+}
+
+body {
+  background: var(--bg);
+  color: var(--text);
+  font-family: var(--serif);
+  font-size: var(--fs-base);
+  line-height: 1.2;
+  /* Flex column + min-height lets the footer stick to the bottom of the
+     viewport even when a page is short (see footer.css). */
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+}
+
+/* The main content grows to fill the space, pushing the footer down. */
+#main-content {
+  flex: 1 0 auto;
+}
+
+img,
+video {
+  display: block;
+  max-width: 100%;
+}

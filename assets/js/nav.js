@@ -31,7 +31,7 @@
   nav.innerHTML =
     link('work', '/', 'work') +
     `<a class="menu-link" href="/feed.xml" aria-label="RSS feed">rss</a>` +
-    `<a class="menu-link" href="/assets/img/jaloliddin_ismailov_resume.pdf" target="_blank" rel="noopener noreferrer" aria-label="Resume (opens PDF in new tab)">resume</a>` +
+    `<a class="menu-link" href="/assets/img/jaloliddin_ismailov_resume.pdf" rel="noopener noreferrer" aria-label="Resume">resume</a>` +
     link('about', '/bio.html', 'about');
 
   document.body.insertBefore(nav, skip.nextSibling);
