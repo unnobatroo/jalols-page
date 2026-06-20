@@ -166,6 +166,7 @@ function firstImage(body) {
 
 // ── scan ──────────────────────────────────────────────────────────────────────
 // Read every posts/*.md (skipping _-prefixed templates) into one sorted list.
+if (!fs.existsSync(POSTS_DIR)) fs.mkdirSync(POSTS_DIR, { recursive: true });
 const posts = fs.readdirSync(POSTS_DIR)
   .filter(f => f.endsWith('.md') && !f.startsWith('_'))
   .map(file => {
