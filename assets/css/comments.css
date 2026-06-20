@@ -99,6 +99,7 @@
   background: var(--surface);
   color: var(--muted);
   transition: border-color .15s, background .15s, color .15s;
+  margin: 2px 0 12px;
 }
 
 /* hover = the same transform the tag chips use: dark-grey fill, red label. */

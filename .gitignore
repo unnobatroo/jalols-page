@@ -26,3 +26,5 @@ _site/
 posts.json
 
 posts/*/
+
+template.md

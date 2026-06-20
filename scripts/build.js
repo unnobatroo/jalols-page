@@ -61,6 +61,11 @@ function postUrl(p) {
   return `${SITE_URL}/posts/${p.slug}/`;
 }
 
+/** Escape text going into an HTML attribute (meta content, title). */
+function escAttr(s) {
+  return String(s).replace(/&/g, '&amp;').replace(/"/g, '&quot;').replace(/</g, '&lt;');
+}
+
 /**
  * Write a static page for one post at posts/<slug>/index.html, giving every
  * post a clean URL (/posts/<slug>/) instead of a ?slug= query string. The page
@@ -70,6 +75,12 @@ function postUrl(p) {
 function writePostPage(p) {
   const dir = path.join(ROOT, 'posts', p.slug);
   fs.mkdirSync(dir, { recursive: true });
+  const title    = escAttr(p.title);
+  const excerpt  = escAttr(p.excerpt || '');
+  const url      = postUrl(p);
+  // Fall back to the site's profile photo so every post still gets a link-
+  // preview image even without one in its body.
+  const ogImage  = p.image ? `${SITE_URL}${p.image}` : `${SITE_URL}/assets/img/jalols_photo.jpg`;
   fs.writeFileSync(path.join(dir, 'index.html'),
 `<!DOCTYPE html>
 <html lang="en">
@@ -77,7 +88,17 @@ function writePostPage(p) {
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <link rel="icon" type="image/svg+xml" href="/assets/img/favicon.svg?v=18" />
-  <title>${p.title} — Jaloliddin Ismailov</title>
+  <title>${title} — Jaloliddin Ismailov</title>
+  <meta name="description" content="${excerpt}" />
+  <meta property="og:type" content="article" />
+  <meta property="og:title" content="${title}" />
+  <meta property="og:description" content="${excerpt}" />
+  <meta property="og:url" content="${url}" />
+  <meta property="og:image" content="${ogImage}" />
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:title" content="${title}" />
+  <meta name="twitter:description" content="${excerpt}" />
+  <meta name="twitter:image" content="${ogImage}" />
   <link rel="stylesheet" href="/assets/css/style.css?v=18" />
   <link rel="stylesheet" href="/assets/css/comments.css?v=18" />
   <link rel="alternate" type="application/rss+xml" title="Jaloliddin Ismailov — RSS" href="/feed.xml" />
@@ -122,14 +143,17 @@ function writePostPage(p) {
 
 /**
  * First image in the markdown body — markdown ![alt](src) or a raw <img src>.
- * Fenced code blocks are stripped first so a sample image inside a ``` block
- * isn't mistaken for a real one. The earlier of the two matches wins.
+ * Fenced AND inline code spans are stripped first so a sample image written
+ * as a syntax example (inside ``` or single backticks) isn't mistaken for a
+ * real one. The earlier of the two matches wins.
  * @param {string} body - post content with front matter already removed
  * @returns {{image: string, imageAlt: string}|{}} - {} when there's no image,
  *          so cards without a picture render no thumbnail at all.
  */
 function firstImage(body) {
-  const text   = body.replace(/```[\s\S]*?```/g, '');
+  const text = body
+    .replace(/```[\s\S]*?```/g, '')
+    .replace(/`[^`\n]*`/g, '');
   const md     = text.match(/!\[([^\]]*)\]\(\s*([^)\s]+)/);
   const html   = text.match(/<img\b[^>]*\bsrc=["']([^"']+)["'][^>]*>/i);
   const mdAt   = md ? text.indexOf(md[0]) : Infinity;
@@ -214,3 +238,28 @@ ${items}
   'utf8'
 );
 console.log(`feed.xml    ✓`);
+
+// ── sitemap.xml ───────────────────────────────────────────────────────────────
+// The two static pages plus one <url> per post. lastmod uses the post's own
+// date (we don't track real file mtimes), which is good enough for crawlers.
+const staticUrls = [
+  { loc: `${SITE_URL}/`, lastmod: posts[0]?.date },
+  { loc: `${SITE_URL}/bio.html` },
+];
+const urlEntries = [
+  ...staticUrls,
+  ...posts.map(p => ({ loc: postUrl(p), lastmod: p.date })),
+].map(u => `
+  <url>
+    <loc>${u.loc}</loc>${u.lastmod ? `\n    <lastmod>${u.lastmod}</lastmod>` : ''}
+  </url>`).join('');
+
+fs.writeFileSync(
+  path.join(ROOT, 'sitemap.xml'),
+  `<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">${urlEntries}
+</urlset>
+`,
+  'utf8'
+);
+console.log(`sitemap.xml ✓`);
