@@ -25,11 +25,11 @@
  */
 
 'use strict';
-const fs   = require('fs');
+const fs = require('fs');
 const path = require('path');
 
-const SITE_URL  = 'https://jalols.page';
-const ROOT      = path.join(__dirname, '..');
+const SITE_URL = 'https://jalols.page';
+const ROOT = path.join(__dirname, '..');
 const POSTS_DIR = path.join(ROOT, 'posts');
 
 /**
@@ -41,18 +41,18 @@ const POSTS_DIR = path.join(ROOT, 'posts');
 function parseFrontMatter(src) {
   const m = src.match(/^---\n([\s\S]*?)\n---/);
   if (!m) return null;
-  const fm  = m[1];
+  const fm = m[1];
   // Pull a single scalar field by name, e.g. get('title'); '' if absent.
   const get = key => (fm.match(new RegExp(`^${key}:\\s*(.+)$`, 'm')) || [])[1]?.trim() ?? '';
   // tags is a bracketed list: tags: [a, b, c]
   const tagsRaw = (fm.match(/^tags:\s*\[(.+)\]$/m) || [])[1] ?? '';
   return {
-    title:   get('title'),
-    date:    get('date'),
+    title: get('title'),
+    date: get('date'),
     excerpt: get('excerpt'),
-    type:    get('type') || 'post',
-    status:  get('status'),
-    tags:    tagsRaw.split(',').map(t => t.trim()).filter(Boolean),
+    type: get('type') || 'post',
+    status: get('status'),
+    tags: tagsRaw.split(',').map(t => t.trim()).filter(Boolean),
   };
 }
 
@@ -75,14 +75,14 @@ function escAttr(s) {
 function writePostPage(p) {
   const dir = path.join(ROOT, 'posts', p.slug);
   fs.mkdirSync(dir, { recursive: true });
-  const title    = escAttr(p.title);
-  const excerpt  = escAttr(p.excerpt || '');
-  const url      = postUrl(p);
+  const title = escAttr(p.title);
+  const excerpt = escAttr(p.excerpt || '');
+  const url = postUrl(p);
   // Fall back to the site's profile photo so every post still gets a link-
   // preview image even without one in its body.
-  const ogImage  = p.image ? `${SITE_URL}${p.image}` : `${SITE_URL}/assets/img/jalols_photo.jpg`;
+  const ogImage = p.image ? `${SITE_URL}${p.image}` : `${SITE_URL}/assets/img/jalols_photo.jpg`;
   fs.writeFileSync(path.join(dir, 'index.html'),
-`<!DOCTYPE html>
+    `<!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
@@ -154,9 +154,9 @@ function firstImage(body) {
   const text = body
     .replace(/```[\s\S]*?```/g, '')
     .replace(/`[^`\n]*`/g, '');
-  const md     = text.match(/!\[([^\]]*)\]\(\s*([^)\s]+)/);
-  const html   = text.match(/<img\b[^>]*\bsrc=["']([^"']+)["'][^>]*>/i);
-  const mdAt   = md ? text.indexOf(md[0]) : Infinity;
+  const md = text.match(/!\[([^\]]*)\]\(\s*([^)\s]+)/);
+  const html = text.match(/<img\b[^>]*\bsrc=["']([^"']+)["'][^>]*>/i);
+  const mdAt = md ? text.indexOf(md[0]) : Infinity;
   const htmlAt = html ? text.indexOf(html[0]) : Infinity;
   if (mdAt === Infinity && htmlAt === Infinity) return {};
   if (mdAt <= htmlAt) return { image: md[2], imageAlt: md[1] || '' };
@@ -171,7 +171,7 @@ const posts = fs.readdirSync(POSTS_DIR)
   .filter(f => f.endsWith('.md') && !f.startsWith('_'))
   .map(file => {
     const slug = file.slice(0, -3);                 // filename without ".md" → URL slug
-    const raw  = fs.readFileSync(path.join(POSTS_DIR, file), 'utf8');
+    const raw = fs.readFileSync(path.join(POSTS_DIR, file), 'utf8');
     const meta = parseFrontMatter(raw);
     if (!meta?.title || !meta?.date) {              // title + date are the only hard requirements
       console.warn(`  skip ${file}: missing title or date`);
@@ -196,8 +196,8 @@ posts.forEach(writePostPage);
 console.log(`post pages  ✓  (posts/<slug>/index.html)`);
 
 // ── feed.xml ──────────────────────────────────────────────────────────────────
-const DAYS   = ['Sun','Mon','Tue','Wed','Thu','Fri','Sat'];
-const MONTHS = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+const DAYS = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
+const MONTHS = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
 
 /**
  * Format a YYYY-MM-DD date as an RFC-822 string, the date format RSS requires
@@ -206,8 +206,8 @@ const MONTHS = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov
  */
 function rfc822(iso) {
   const d = new Date(iso + 'T00:00:00Z');
-  return `${DAYS[d.getUTCDay()]}, ${String(d.getUTCDate()).padStart(2,'0')} ` +
-         `${MONTHS[d.getUTCMonth()]} ${d.getUTCFullYear()} 00:00:00 +0000`;
+  return `${DAYS[d.getUTCDay()]}, ${String(d.getUTCDate()).padStart(2, '0')} ` +
+    `${MONTHS[d.getUTCMonth()]} ${d.getUTCFullYear()} 00:00:00 +0000`;
 }
 
 // One <item> per post. Title/excerpt go in CDATA so punctuation needs no
