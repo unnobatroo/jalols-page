@@ -23,6 +23,9 @@ npm-debug.log*
 dist/
 _site/
 
+assets/img/jaloliddin_ismailov_*.pdf
+.codex-vault/
+
 posts.json
 
 posts/*/

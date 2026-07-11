@@ -27,11 +27,10 @@
   const link = (id, href, label) =>
     `<a class="menu-link${page === id ? ' menu-link--active' : ''}" href="${href}"${page === id ? ' aria-current="page"' : ''}>${label}</a>`;
 
-  // "resume" opens in a new tab — label it so screen readers announce that.
   nav.innerHTML =
     link('work', '/', 'work') +
     `<a class="menu-link" href="/feed.xml" aria-label="RSS feed">rss</a>` +
-    `<a class="menu-link" href="/assets/img/jaloliddin_ismailov_resume.pdf" rel="noopener noreferrer" aria-label="Resume">resume</a>` +
+    // Personal document link temporarily disabled.
     link('about', '/bio.html', 'about');
 
   document.body.insertBefore(nav, skip.nextSibling);
