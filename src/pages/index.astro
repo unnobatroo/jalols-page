@@ -1,0 +1,83 @@
+---
+import { getCollection } from 'astro:content';
+import BaseLayout from '../layouts/BaseLayout.astro';
+import { formatDate, jsonForHtml, sortPosts, summarizePost } from '../lib/site';
+
+const entries = sortPosts(await getCollection('posts'), import.meta.env.DEV);
+const posts = entries.map(summarizePost);
+const tagCounts = new Map<string, number>();
+posts.forEach((post) => post.tags.forEach((tag) => tagCounts.set(tag, (tagCounts.get(tag) ?? 0) + 1)));
+const tags = [...tagCounts].sort(([a, aCount], [b, bCount]) => bCount - aCount || a.localeCompare(b));
+---
+
+<BaseLayout current="work">
+  <div class="page-hero-wrap">
+    <div class="header-container">
+      <h1 class="header-title">jaloliddin "jalol" ismailov</h1>
+      <div class="header-icons">
+        <a href="mailto:unnobatroo@icloud.com" aria-label="Email"><img src="/assets/img/icons/email.svg" alt="" /></a>
+        <a href="https://github.com/unnobatroo" aria-label="GitHub"><img src="/assets/img/icons/github.svg" alt="" /></a>
+        <a href="https://linkedin.com/in/unnobatroo" aria-label="LinkedIn"><img src="/assets/img/icons/linkedin.svg" alt="" /></a>
+        <a href="https://unsplash.com/@unnobatroo" aria-label="Unsplash"><img src="/assets/img/icons/unsplash.svg" alt="" /></a>
+        <a href="https://www.goodreads.com/unnobatroo" aria-label="Goodreads"><img src="/assets/img/icons/goodreads.svg" alt="" /></a>
+      </div>
+      <p class="header-blurb">using comp sci to connect the dots,<br />from cultural heritage to climate policy</p>
+    </div>
+  </div>
+
+  <div class="page-content">
+    <div class="search-row">
+      <label class="sr-only" for="search">Search posts</label>
+      <input type="search" id="search" class="search-bar" placeholder="search posts…" />
+      <div class="sort-row">
+        <button class="filter-btn filter-btn--active" id="sort-date" type="button" aria-label="Sort by date, newest first">
+          date <span class="sort-arrow" aria-hidden="true">↓</span>
+        </button>
+      </div>
+    </div>
+    <div class="filter-bar">
+      <div class="filter-row" id="filter-row" aria-label="Filter posts by tag">
+        <button class="filter-btn filter-btn--active" type="button" data-tag="all" aria-pressed="true">
+          all<span class="tag-count">{posts.length}</span>
+        </button>
+        {tags.map(([tag, count]) => (
+          <button class="filter-btn" type="button" data-tag={tag} aria-pressed="false">
+            {tag}<span class="tag-count">{count}</span>
+          </button>
+        ))}
+      </div>
+    </div>
+    <section class="card-grid" id="card-grid" aria-label="Posts">
+      {posts.map((post) => (
+        <article
+          class="thumb-container"
+          aria-label={post.title}
+          data-post-card
+          data-slug={post.slug}
+        >
+          {post.image && (
+            <a class="thumb-titleLink" href={`/posts/${post.slug}/`} aria-hidden="true" tabindex="-1">
+              <img class="thumb-image" src={post.image} alt="" loading="lazy" />
+            </a>
+          )}
+          <a class="thumb-titleLink" href={`/posts/${post.slug}/`}>
+            <div class="thumb-title">{post.title}</div>
+          </a>
+          <div class="thumb-time">
+            {formatDate(new Date(`${post.date}T00:00:00Z`))}{post.status && ` · ${post.status}`}
+          </div>
+          <div class="thumb-blurb">{post.excerpt}</div>
+          <div class="thumb-tags">
+            {post.tags.map((tag) => (
+              <button class="thumb-tag" type="button" data-card-tag={tag} aria-label={`Filter by tag: ${tag}`}>{tag}</button>
+            ))}
+          </div>
+        </article>
+      ))}
+    </section>
+    <p class:list={["no-results", { hidden: posts.length > 0 }]} id="no-results">nothing here yet.</p>
+    <span class="sr-only" id="results-status" aria-live="polite" aria-atomic="true"></span>
+  </div>
+  <script is:inline id="posts-data" type="application/json" set:html={jsonForHtml(posts)}></script>
+  <script src="../scripts/home.ts"></script>
+</BaseLayout>

@@ -15,19 +15,23 @@
 
 node_modules/
 npm-debug.log*
+.astro/
 
 .env
 .env.local
 .claude
 
 dist/
-_site/
 
-assets/img/jaloliddin_ismailov_*.pdf
+public/assets/docs/jaloliddin_ismailov_*.pdf
 .codex-vault/
 
-posts.json
+src/data/posts/example-showcase.md
 
-posts/*/
-
-template.md
+# I keep my author wiki on this machine only. The empty directory lets a clean
+# checkout build without publishing my wiki pages, layout, styles, or content.
+src/data/wiki/*
+!src/data/wiki/.gitkeep
+src/pages/wiki/
+src/layouts/WikiLayout.astro
+src/styles/wiki.css

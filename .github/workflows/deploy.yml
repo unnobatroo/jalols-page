@@ -24,16 +24,25 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: npm
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Verify and build
+        run: npm run verify
+
       - name: Setup Pages
         uses: actions/configure-pages@v4
-
-      - name: Build (generate posts.json and feed.xml from posts/*.md)
-        run: node scripts/build.js
 
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3
         with:
-          path: '.'
+          path: dist
 
       - name: Deploy to GitHub Pages
         id: deployment

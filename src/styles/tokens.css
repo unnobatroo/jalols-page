@@ -1,0 +1,106 @@
+:root {
+
+  --accent: #0075ad;
+
+  --link-visited: #b40eb4;
+
+  --link-hover: #cc0000;
+
+  --ul: #b2ccf0;
+
+  --ul-visited: #e0b2e0;
+
+  --ul-hover: #f0b2b2;
+
+  --link-current: #ebebcf;
+
+
+
+  --text: #111;
+
+  --muted: #666;
+
+  --bg: #fff;
+
+  --surface: rgba(0, 0, 0, .05);
+
+  --border: #bbb;
+
+
+
+  --serif: "PT Serif", Georgia, serif;
+  --mono: "JetBrains Mono", Menlo, Consolas, monospace;
+
+
+  --fs-2xs: 11px;
+  --fs-xs: 12px;
+  --fs-sm: 14px;
+  --fs-base: 17px;
+  --fs-md: 18px;
+  --fs-lg: 22px;
+  --fs-xl: 28px;
+  --fs-2xl: 36px;
+
+  --gap: 20px;
+
+  --page-gutter: clamp(20px, 5vw, 48px);
+
+  --wide: 1200px;
+
+  --reading-measure: 68ch;
+
+}
+
+@media (min-width: 880px) {
+  :root {
+    --fs-2xs: 12px;
+    --fs-xs: 13px;
+    --fs-sm: 15px;
+    --fs-base: 18px;
+    --fs-md: 20px;
+    --fs-lg: 25px;
+    --fs-xl: 32px;
+    --fs-2xl: 40px;
+  }
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html {
+  font-size: var(--fs-base);
+  scroll-behavior: smooth;
+}
+
+@media (min-width: 601px) {
+  html {
+    scrollbar-gutter: stable;
+  }
+}
+
+body {
+  background: var(--bg);
+  color: var(--text);
+  font-family: var(--serif);
+  font-size: var(--fs-base);
+  line-height: 1.5;
+
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+}
+
+#main-content {
+  flex: 1 0 auto;
+}
+
+img,
+video {
+  display: block;
+  max-width: 100%;
+}
