@@ -15,6 +15,4 @@ npm run verify # type + pages build checks
 - `http://localhost:4321/wiki/` — my notes on writing, architecture, and publishing
 - `http://localhost:4321/posts/example-showcase/` — my markdown feature playground
 
-### Credits
-
 Under [The GNU General Public License](LICENSE).
