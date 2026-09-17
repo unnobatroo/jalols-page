@@ -1,0 +1,37 @@
+baseURL = "https://jalols.page/"
+title   = "Jaloliddin Ismailov"
+theme   = "hugo-mini"
+
+defaultContentLanguage              = "en"
+defaultContentLanguageInSubdirectory = false
+
+enableRobotsTXT = true
+
+[params]
+  description = "Jaloliddin Ismailov — website under renovation, please check back later."
+  authorName = "Jaloliddin Ismailov"
+  authorURL  = "https://jalols.page/"
+  copyrightYear = 2026
+  recentSidebarCount = 5
+  socialSharing = false
+
+  [params.social]
+    github    = "https://github.com/unnobatroo"
+    linkedin  = "https://linkedin.com/in/jismailov"
+    unsplash  = "https://unsplash.com/@unnobatroo"
+    goodreads = "https://www.goodreads.com/unnobatroo"
+    email     = "me@jismailov.com"
+
+[permalinks]
+  blog = "/:slug/"
+
+[markup]
+  [markup.goldmark]
+    [markup.goldmark.renderer]
+      unsafe = true
+
+[[menu.main]]
+  identifier = "blog"
+  name       = "Articles"
+  url        = "/blog/"
+  weight     = 1

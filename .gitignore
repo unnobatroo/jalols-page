@@ -1,37 +1,22 @@
+# OS
 .DS_Store
 .AppleDouble
 .LSOverride
 ._*
 
+# Editors
 .vscode/
 .idea/
-*.suo
-*.ntvs*
-*.njsproj
-*.sln
 *.sw?
 *.swp
 *.swo
 
-node_modules/
-npm-debug.log*
-.astro/
+# Hugo
+public/
+resources/_gen/
+.hugo_build.lock
+hugo_stats.json
 
+# Environment
 .env
 .env.local
-.claude
-
-dist/
-
-public/assets/docs/jaloliddin_ismailov_*.pdf
-.codex-vault/
-
-src/data/posts/example-showcase.md
-
-# I keep my author wiki on this machine only. The empty directory lets a clean
-# checkout build without publishing my wiki pages, layout, styles, or content.
-src/data/wiki/*
-!src/data/wiki/.gitkeep
-src/pages/wiki/
-src/layouts/WikiLayout.astro
-src/styles/wiki.css

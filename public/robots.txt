@@ -1,4 +1,1 @@
 User-agent: *
-Allow: /
-
-Sitemap: https://jalols.page/sitemap.xml

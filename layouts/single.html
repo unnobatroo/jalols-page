@@ -1,0 +1,31 @@
+{{ define "main" }}
+  {{- $isPost := in (site.Params.mainSections | default (slice "blog")) .Type -}}
+
+  <h1>{{ .Title }}</h1>
+
+  <article lang="{{ .Language.Lang }}">
+    {{ .Content }}
+  </article>
+
+  {{- if $isPost }}
+    <div class="post-meta-inline">
+      <div class="post-meta-left">
+        <time datetime="{{ .Date.Format "2006-01-02" }}" class="post-date">{{ partial "format-date.html" . }}</time>
+      </div>
+    </div>
+
+    {{- /* Comments */}}
+    {{ partial "comments.html" . }}
+
+    {{ with partial "recent-posts.html" . }}
+    <aside class="recent-sidebar" id="recent-sidebar">
+      <p class="recent-sidebar-label">{{ i18n "recent_posts" }}</p>
+      <ul class="blog-posts recent-sidebar-list">
+        {{- range . }}
+        <li><a href="{{ .RelPermalink }}">{{ .Title }}</a></li>
+        {{- end }}
+      </ul>
+    </aside>
+    {{ end }}
+  {{- end }}
+{{ end }}

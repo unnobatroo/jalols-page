@@ -1,0 +1,37 @@
+{{- if not .Params.disable_comments -}}
+<section class="comments-section" style="margin-top: 3rem; padding-top: 2rem; border-top: 1px solid var(--border-color, rgba(128,128,128,0.2));">
+  <script
+    src="https://giscus.app/client.js"
+    data-repo="unnobatroo/jalols-page"
+    data-repo-id="R_kgDOS03y3Q"
+    data-category="General"
+    data-category-id="DIC_kwDOS03y3c4DF1LC"
+    data-mapping="pathname"
+    data-strict="0"
+    data-reactions-enabled="0"
+    data-emit-metadata="0"
+    data-input-position="bottom"
+    data-theme="preferred_color_scheme"
+    data-lang="en"
+    crossorigin="anonymous"
+    async
+  ></script>
+  <script>
+    (function() {
+      function getGiscusTheme() {
+        var theme = document.documentElement.getAttribute('data-theme');
+        if (theme === 'dark') return 'dark';
+        if (theme === 'light') return 'light';
+        return window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+      }
+      function syncGiscus() {
+        var iframe = document.querySelector('iframe.giscus-frame');
+        if (!iframe || !iframe.contentWindow) return;
+        iframe.contentWindow.postMessage({ giscus: { setConfig: { theme: getGiscusTheme() } } }, 'https://giscus.app');
+      }
+      var observer = new MutationObserver(syncGiscus);
+      observer.observe(document.documentElement, { attributes: true, attributeFilter: ['data-theme'] });
+    })();
+  </script>
+</section>
+{{- end -}}

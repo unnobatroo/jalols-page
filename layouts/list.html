@@ -1,0 +1,36 @@
+{{ define "main" }}
+<article>
+  {{- $allPosts := where .RegularPagesRecursive ".Params.hidden" "ne" true -}}
+  {{- if and .IsPage (not $allPosts) -}}
+    {{- $allPosts = partial "main-pages.html" . -}}
+  {{- end -}}
+  {{- $allPosts = $allPosts.ByDate.Reverse -}}
+
+  {{- $categories := slice -}}
+  {{- $uncategorized := slice -}}
+  {{- range $allPosts -}}
+    {{- if not .Params.categories -}}{{- $uncategorized = $uncategorized | append . -}}{{- end -}}
+    {{- range .Params.categories -}}
+      {{- with . -}}{{- $categories = $categories | append . -}}{{- end -}}
+    {{- end -}}
+  {{- end -}}
+  {{- $groups := $categories | uniq -}}
+  {{- if $uncategorized -}}
+    {{- $groups = $groups | append "_untagged" -}}
+  {{- end -}}
+
+  <h1>{{ .Title | default (i18n "articles") }}</h1>
+
+  {{ with .Content }}
+  <div class="section-intro" style="margin-bottom: 2rem;">
+    {{ . }}
+  </div>
+  {{ end }}
+
+  {{- $half := math.Ceil (div (len $groups) 2.0) -}}
+  <div class="posts-columns">
+    {{ partial "posts-column.html" (dict "groups" (first (int $half) $groups) "allPosts" $allPosts "uncategorized" $uncategorized) }}
+    {{ partial "posts-column.html" (dict "groups" (after (int $half) $groups) "allPosts" $allPosts "uncategorized" $uncategorized) }}
+  </div>
+</article>
+{{ end }}

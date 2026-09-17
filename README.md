@@ -1,18 +1,5 @@
 # jalols.page
 
-This is my personal website and markdown blog.
+My personal website and blog developed with [Hugo](https://gohugo.io) and its [Mini](https://themes.gohugo.io/themes/hugo-mini/) theme.
 
-### Basic commands
-
-```sh
-npm install # download dependencies
-npm run dev # run on localhost
-npm run verify # type + pages build checks
-```
-
-### Gitignored pages
-
-- `http://localhost:4321/wiki/` — my notes on writing, architecture, and publishing
-- `http://localhost:4321/posts/example-showcase/` — my markdown feature playground
-
-Under [The GNU General Public License](LICENSE).
+Under the GPL-3.0, CC BY-SA 4.0, and MIT licenses.
